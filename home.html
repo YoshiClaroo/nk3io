@@ -3,147 +3,256 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>URLy - Panel de Control</title>
+  <title>NK3IO - Panel de Control</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --primary: #1e40af;
-      --secondary: #f0f7ff;
+      --primary: #4f46e5;
+      --primary-dark: #4338ca;
+      --secondary: #e0e7ff;
+      --dark: #1e293b;
+      --light: #f8fafc;
+      --gray: #64748b;
+      --success: #10b981;
+      --error: #ef4444;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f8fafc;
-      margin: 0;
-      padding: 20px;
-      max-width: 1000px;
-      margin: 0 auto;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
     }
-    .user-info {
-      text-align: right;
-      margin-bottom: 10px;
-      padding: 10px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      width: 100%;
+    }
+    header {
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-content {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .user-name {
-      font-weight: 600;
-      color: var(--primary);
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
     }
-    .logout-btn {
-      background: #ef4444;
+    .logo-icon {
+      color: var(--primary);
+      font-size: 28px;
+    }
+    .logo-text {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--secondary);
+    }
+    .auth-button {
+      background: var(--primary);
       color: white;
       border: none;
-      padding: 8px 15px;
-      border-radius: 6px;
+      padding: 10px 20px;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.3s;
     }
-    .logout-btn:hover {
-      background: #dc2626;
+    .auth-button:hover {
+      background: var(--primary-dark);
     }
-    .header {
-      text-align: center;
+    .auth-button i {
+      font-size: 18px;
+    }
+    .main {
+      padding: 40px 0;
+    }
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .welcome-text h1 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+    .welcome-text p {
+      opacity: 0.9;
+    }
+    .welcome-icon {
+      font-size: 60px;
+      opacity: 0.2;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
       margin-bottom: 30px;
     }
-    .header h1 {
-      color: var(--primary);
-      font-size: 2.5rem;
-      margin-bottom: 5px;
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     }
-    .header p {
-      color: #64748b;
+    .stat-title {
+      font-size: 1rem;
+      color: var(--gray);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .stat-value {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+    .stat-change {
+      font-size: 0.9rem;
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .stat-change.up {
+      color: var(--success);
+    }
+    .stat-change.down {
+      color: var(--error);
     }
     .url-form {
       background: white;
-      border-radius: 10px;
-      padding: 25px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
       margin-bottom: 30px;
     }
-    .form-group {
-      margin-bottom: 15px;
+    .section-title {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .form-group label {
+    .form-row {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      flex: 1;
+    }
+    .form-label {
       display: block;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
       font-weight: 500;
-      color: #334155;
+      color: var(--dark);
     }
     .form-control {
       width: 100%;
-      padding: 10px 15px;
+      padding: 14px 16px;
       border: 1px solid #e2e8f0;
       border-radius: 8px;
       font-size: 16px;
+      transition: border-color 0.3s;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
     }
     .btn {
       background: var(--primary);
       color: white;
       border: none;
-      padding: 12px 20px;
+      padding: 14px 25px;
       border-radius: 8px;
       cursor: pointer;
       font-size: 16px;
       font-weight: 500;
       transition: background 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
     .btn:hover {
-      background: #1e3a8a;
+      background: var(--primary-dark);
+    }
+    .btn i {
+      font-size: 18px;
+    }
+    .result-container {
+      display: none;
+      margin-top: 20px;
+      background: var(--secondary);
+      padding: 20px;
+      border-radius: 8px;
+    }
+    .result-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .result-label {
+      font-weight: 500;
+      min-width: 120px;
+    }
+    .result-value {
+      flex: 1;
+      word-break: break-all;
     }
     .btn-copy {
-      background: #10b981;
+      background: var(--success);
+      padding: 10px 15px;
       margin-left: 10px;
     }
     .btn-copy:hover {
       background: #0d9f6e;
     }
-    .result-container {
-      display: none;
-      margin-top: 15px;
-    }
-    .stats-container {
-      background: white;
-      border-radius: 10px;
-      padding: 25px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      margin-bottom: 30px;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-    }
-    .stat-card {
-      text-align: center;
-      padding: 15px;
-      border-radius: 8px;
-      background: var(--secondary);
-    }
-    .stat-value {
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--primary);
-      margin: 10px 0;
-    }
-    .stat-label {
-      color: #64748b;
-      font-size: 14px;
-    }
     .history-container {
       background: white;
-      border-radius: 10px;
-      padding: 25px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    .history-title {
-      color: var(--primary);
-      margin-top: 0;
-      margin-bottom: 20px;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      margin-bottom: 30px;
     }
     .history-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       gap: 15px;
     }
     .day-card {
@@ -157,7 +266,7 @@
       margin-bottom: 10px;
     }
     .day-stats {
-      font-size: 12px;
+      font-size: 0.9rem;
     }
     .countries-container {
       margin-top: 20px;
@@ -165,7 +274,7 @@
     .country-item {
       display: flex;
       justify-content: space-between;
-      padding: 8px 0;
+      padding: 12px 0;
       border-bottom: 1px solid #e2e8f0;
     }
     .country-name {
@@ -173,109 +282,267 @@
     }
     .country-visits {
       color: var(--primary);
+      font-weight: 500;
+    }
+    footer {
+      background: var(--dark);
+      color: white;
+      padding: 30px 0;
+      text-align: center;
+    }
+    .footer-logo {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .footer-logo-icon {
+      color: var(--primary);
+    }
+    .footer-bottom {
+      margin-top: 30px;
+      color: #94a3b8;
+    }
+    @media (max-width: 768px) {
+      .form-row {
+        flex-direction: column;
+      }
+      .welcome-banner {
+        flex-direction: column;
+        text-align: center;
+      }
+      .welcome-icon {
+        display: none;
+      }
+      .history-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Barra de usuario -->
-  <div class="user-info">
-    <span id="userName">Cargando...</span>
-    <button id="logoutBtn" class="logout-btn">Cerrar sesión</button>
-  </div>
-
-  <div class="header">
-    <h1>URLy</h1>
-    <p>Acorta tus enlaces y gana dinero</p>
-  </div>
-
-  <!-- Formulario para acortar URLs -->
-  <div class="url-form">
-    <div class="form-group">
-      <label for="longUrl">URL Larga</label>
-      <input type="text" id="longUrl" class="form-control" placeholder="https://ejemplo.com/pagina-larga">
+  <!-- Header -->
+  <header>
+    <div class="container header-content">
+      <a href="#" class="logo">
+        <i class="fas fa-link logo-icon"></i>
+        <span class="logo-text">NK3IO</span>
+      </a>
+      <div class="user-menu">
+        <img id="userAvatar" src="" alt="Avatar" class="user-avatar" style="display: none;">
+        <button id="authButton" class="auth-button">
+          <i class="fab fa-google"></i>
+          <span id="authButtonText">Cargando...</span>
+        </button>
+      </div>
     </div>
-    <div class="form-group">
-      <label for="alias">Alias (opcional)</label>
-      <input type="text" id="alias" class="form-control" placeholder="mialias">
-    </div>
-    <button id="shortenBtn" class="btn">Acortar URL</button>
+  </header>
 
-    <div id="resultContainer" class="result-container">
-      <div class="form-group">
-        <label>Tu URL acortada</label>
-        <div style="display: flex;">
-          <input type="text" id="shortUrl" class="form-control" readonly>
-          <button id="copyBtn" class="btn btn-copy">Copiar</button>
+  <!-- Main Content -->
+  <main class="main">
+    <div class="container">
+      <!-- Welcome Banner -->
+      <div class="welcome-banner">
+        <div class="welcome-text">
+          <h1 id="welcomeName">Bienvenido a NK3IO</h1>
+          <p>Acorta tus enlaces y comienza a monetizar tu tráfico hoy mismo</p>
+        </div>
+        <i class="fas fa-chart-line welcome-icon"></i>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-title">
+            <i class="fas fa-link"></i>
+            Enlaces activos
+          </div>
+          <div class="stat-value" id="totalLinks">0</div>
+          <div class="stat-change up">
+            <i class="fas fa-arrow-up"></i>
+            <span>12% este mes</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">
+            <i class="fas fa-eye"></i>
+            Visitas totales
+          </div>
+          <div class="stat-value" id="totalVisits">0</div>
+          <div class="stat-change up">
+            <i class="fas fa-arrow-up"></i>
+            <span>8% esta semana</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">
+            <i class="fas fa-money-bill-wave"></i>
+            Ganancias totales
+          </div>
+          <div class="stat-value" id="totalEarnings">$0.00</div>
+          <div class="stat-change up">
+            <i class="fas fa-arrow-up"></i>
+            <span>15% este mes</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">
+            <i class="fas fa-percentage"></i>
+            CPM promedio
+          </div>
+          <div class="stat-value" id="avgCpm">$0.00</div>
+          <div class="stat-change down">
+            <i class="fas fa-arrow-down"></i>
+            <span>2% esta semana</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- URL Shortener Form -->
+      <div class="url-form">
+        <h2 class="section-title">
+          <i class="fas fa-plus-circle"></i>
+          Acortar nuevo enlace
+        </h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="longUrl" class="form-label">URL original</label>
+            <input type="text" id="longUrl" class="form-control" placeholder="https://ejemplo.com/pagina-larga">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="alias" class="form-label">Alias personalizado (opcional)</label>
+            <input type="text" id="alias" class="form-control" placeholder="mialias">
+          </div>
+          <div class="form-group">
+            <label for="tags" class="form-label">Etiquetas (opcional)</label>
+            <input type="text" id="tags" class="form-control" placeholder="marketing, redes, promoción">
+          </div>
+        </div>
+        <button id="shortenBtn" class="btn">
+          <i class="fas fa-link"></i>
+          Acortar URL
+        </button>
+
+        <!-- Result Container -->
+        <div id="resultContainer" class="result-container">
+          <div class="result-row">
+            <div class="result-label">URL acortada:</div>
+            <div class="result-value" id="shortUrl"></div>
+            <button id="copyBtn" class="btn btn-copy">
+              <i class="fas fa-copy"></i>
+              Copiar
+            </button>
+          </div>
+          <div class="result-row">
+            <div class="result-label">Estadísticas:</div>
+            <div class="result-value" id="statsUrl"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visits by Country -->
+      <div class="history-container">
+        <h2 class="section-title">
+          <i class="fas fa-globe-americas"></i>
+          Visitas por país
+        </h2>
+        <div id="countriesList" class="countries-container">
+          <!-- Se llenará dinámicamente -->
+          <div class="country-item">
+            <span class="country-name">Cargando datos...</span>
+            <span class="country-visits">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daily History -->
+      <div class="history-container">
+        <h2 class="section-title">
+          <i class="fas fa-calendar-alt"></i>
+          Historial diario
+        </h2>
+        <div class="history-grid" id="historyGrid">
+          <!-- Se llenará dinámicamente -->
+          <div class="day-card">
+            <div class="day-date">Cargando...</div>
+            <div class="day-stats">0 visitas</div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </main>
 
-  <!-- Estadísticas -->
-  <div class="stats-container">
-    <div class="stat-card">
-      <div class="stat-label">Visitas Totales</div>
-      <div class="stat-value" id="totalVisits">0</div>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-logo">
+        <i class="fas fa-link footer-logo-icon"></i>
+        <span>NK3IO</span>
+      </div>
+      <div class="footer-bottom">
+        &copy; 2023 NK3IO. Todos los derechos reservados.
+      </div>
     </div>
-    <div class="stat-card">
-      <div class="stat-label">Ganancias Totales</div>
-      <div class="stat-value" id="totalEarnings">$0.00</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">CPM Promedio</div>
-      <div class="stat-value" id="avgCpm">$0.00</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Enlaces Activos</div>
-      <div class="stat-value" id="activeLinks">0</div>
-    </div>
-  </div>
-
-  <!-- Distribución por países -->
-  <div class="history-container">
-    <h3 class="history-title">Visitas por País</h3>
-    <div id="countriesList" class="countries-container">
-      <!-- Se llenará dinámicamente -->
-    </div>
-  </div>
-
-  <!-- Historial por días -->
-  <div class="history-container">
-    <h3 class="history-title">Historial Diario</h3>
-    <div class="history-grid" id="historyGrid">
-      <!-- Se llenará dinámicamente -->
-    </div>
-  </div>
+  </footer>
 
   <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+    import { 
+      getAuth, 
+      signOut,
+      onAuthStateChanged,
+      GoogleAuthProvider
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { 
+      getFirestore, 
+      collection, 
+      addDoc,
+      query,
+      where,
+      getDocs,
+      orderBy,
+      doc,
+      setDoc,
+      getDoc
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-  <script>
-    // Configuración de Firebase
+    // Your web app's Firebase configuration
     const firebaseConfig = {
-      apiKey: "AIzaSyAt79jrJpE2OZgb9MunFkjREeB3t4_Vznk",
-      authDomain: "urlyi-b3947.firebaseapp.com",
-      projectId: "urlyi-b3947",
-      storageBucket: "urlyi-b3947.appspot.com",
-      messagingSenderId: "732077984332",
-      appId: "1:732077984332:web:840e5c1eb645999ede82e9",
-      measurementId: "G-VPHWGQG61Q"
+      apiKey: "AIzaSyAVZMKlYrDeM1ao14Hfzoiz4g4H0HF4HEU",
+      authDomain: "nk3io-fba5a.firebaseapp.com",
+      projectId: "nk3io-fba5a",
+      storageBucket: "nk3io-fba5a.appspot.com",
+      messagingSenderId: "369749670993",
+      appId: "1:369749670993:web:c180f70dc68eedc9228c70",
+      measurementId: "G-EVJ5805FY0"
     };
 
-    // Inicializar Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
     // Elementos del DOM
-    const userNameElement = document.getElementById('userName');
-    const logoutBtn = document.getElementById('logoutBtn');
+    const authButton = document.getElementById('authButton');
+    const authButtonText = document.getElementById('authButtonText');
+    const userAvatar = document.getElementById('userAvatar');
+    const welcomeName = document.getElementById('welcomeName');
     const shortenBtn = document.getElementById('shortenBtn');
     const copyBtn = document.getElementById('copyBtn');
     const resultContainer = document.getElementById('resultContainer');
-    const shortUrlInput = document.getElementById('shortUrl');
+    const shortUrlElement = document.getElementById('shortUrl');
+    const statsUrlElement = document.getElementById('statsUrl');
+    const longUrlInput = document.getElementById('longUrl');
+    const aliasInput = document.getElementById('alias');
 
     // Función para detectar el país del visitante
     async function detectCountry() {
@@ -303,7 +570,7 @@
         'IN': 0.80,    // India
         'default': 1.00 // Resto del mundo
       };
-
+      
       return cpmRates[country] || cpmRates['default'];
     }
 
@@ -313,28 +580,28 @@
         const country = await detectCountry();
         const cpm = calculateCPM(country);
         const earnings = cpm / 1000; // CPM es por 1000 visitas
-
+        
         // Guardar en Firebase
-        await db.collection('clicks').add({
+        await addDoc(collection(db, "clicks"), {
           shortId,
           country,
           cpm,
           earnings,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          timestamp: new Date(),
           userId: auth.currentUser.uid
         });
-
+        
         // Actualizar contador en la URL
-        const urlRef = db.collection('urls').where('shortId', '==', shortId);
-        const querySnapshot = await urlRef.get();
-
+        const urlRef = query(collection(db, "urls"), where("shortId", "==", shortId));
+        const querySnapshot = await getDocs(urlRef);
+        
         querySnapshot.forEach(async (doc) => {
           const currentClicks = doc.data().clicks || 0;
-          await db.collection('urls').doc(doc.id).update({
+          await setDoc(doc.ref, {
             clicks: currentClicks + 1
-          });
+          }, { merge: true });
         });
-
+        
         return earnings;
       } catch (error) {
         console.error("Error registrando click:", error);
@@ -342,13 +609,13 @@
       }
     }
 
-    // Acortar URL
-    shortenBtn.addEventListener('click', async () => {
-      const longUrl = document.getElementById('longUrl').value.trim();
-      const alias = document.getElementById('alias').value.trim();
+    // Función para acortar URL
+    async function shortenUrl() {
+      const longUrl = longUrlInput.value.trim();
+      const alias = aliasInput.value.trim();
 
       if (!longUrl) {
-        alert('Por favor ingresa una URL');
+        alert('Por favor ingresa una URL válida');
         return;
       }
 
@@ -356,18 +623,22 @@
         // Generar ID corto aleatorio si no hay alias
         const shortId = alias || Math.random().toString(36).substring(2, 8);
         const shortUrl = `${window.location.origin}/r/${shortId}`;
+        const statsUrl = `${window.location.origin}/stats/${shortId}`;
 
         // Guardar en Firebase
-        await db.collection("urls").add({
+        await addDoc(collection(db, "urls"), {
           longUrl,
           shortId,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          createdAt: new Date(),
           clicks: 0,
-          userId: auth.currentUser.uid
+          userId: auth.currentUser.uid,
+          alias: alias || null,
+          tags: []
         });
 
         // Mostrar resultado
-        shortUrlInput.value = shortUrl;
+        shortUrlElement.textContent = shortUrl;
+        statsUrlElement.textContent = statsUrl;
         resultContainer.style.display = 'block';
 
         // Actualizar estadísticas
@@ -375,61 +646,58 @@
 
       } catch (error) {
         console.error("Error al acortar URL:", error);
-        alert('Ocurrió un error al acortar la URL');
+        alert('Ocurrió un error al acortar la URL. Intenta nuevamente.');
       }
-    });
+    }
 
-    // Copiar URL
-    copyBtn.addEventListener('click', () => {
-      shortUrlInput.select();
-      document.execCommand('copy');
-      alert('URL copiada al portapapeles');
-    });
-
-    // Cargar estadísticas
+    // Función para cargar estadísticas
     async function loadStats() {
       try {
         // Obtener URLs del usuario actual
-        const urlsQuery = db.collection('urls').where('userId', '==', auth.currentUser.uid);
-        const urlsSnapshot = await urlsQuery.get();
-
-        let totalVisits = 0;
+        const urlsQuery = query(collection(db, "urls"), where("userId", "==", auth.currentUser.uid));
+        const urlsSnapshot = await getDocs(urlsQuery);
+        
         let totalLinks = urlsSnapshot.size;
+        let totalVisits = 0;
         let totalEarnings = 0;
         let visitsByCountry = {};
         let visitsByDay = {};
-
+        
         // Obtener todos los clicks del usuario
-        const clicksQuery = db.collection('clicks').where('userId', '==', auth.currentUser.uid).orderBy('timestamp', 'desc');
-        const clicksSnapshot = await clicksQuery.get();
-
+        const clicksQuery = query(
+          collection(db, "clicks"), 
+          where("userId", "==", auth.currentUser.uid),
+          orderBy("timestamp", "desc")
+        );
+        const clicksSnapshot = await getDocs(clicksQuery);
+        
         clicksSnapshot.forEach(doc => {
           const clickData = doc.data();
           totalVisits++;
           totalEarnings += clickData.earnings || 0;
-
+          
           // Contar visitas por país
           const country = clickData.country || 'Desconocido';
           visitsByCountry[country] = (visitsByCountry[country] || 0) + 1;
-
+          
           // Contar visitas por día
-          const date = clickData.timestamp?.toDate() || new Date();
+          const date = clickData.timestamp.toDate();
           const dayKey = `${date.getDate()}/${date.getMonth() + 1}`;
           visitsByDay[dayKey] = (visitsByDay[dayKey] || 0) + 1;
         });
-
+        
         // Calcular CPM promedio
         const avgCpm = totalVisits > 0 ? (totalEarnings / totalVisits * 1000) : 0;
-
+        
         // Actualizar UI
+        document.getElementById('totalLinks').textContent = totalLinks;
         document.getElementById('totalVisits').textContent = totalVisits;
         document.getElementById('totalEarnings').textContent = `$${totalEarnings.toFixed(2)}`;
-        document.getElementById('activeLinks').textContent = totalLinks;
         document.getElementById('avgCpm').textContent = `$${avgCpm.toFixed(2)}`;
-
+        
         // Mostrar distribución por países
         displayCountries(visitsByCountry);
-
+        
         // Mostrar historial por días
         displayHistory(visitsByDay);
 
@@ -442,17 +710,17 @@
     function displayCountries(countriesData) {
       const countriesList = document.getElementById('countriesList');
       countriesList.innerHTML = '';
-
+      
       // Convertir a array y ordenar por visitas
       const sortedCountries = Object.entries(countriesData)
         .sort((a, b) => b[1] - a[1]);
-
+      
       sortedCountries.forEach(([country, visits]) => {
         const countryItem = document.createElement('div');
         countryItem.className = 'country-item';
         countryItem.innerHTML = `
           <span class="country-name">${getCountryName(country)}</span>
-          <span class="country-visits">${visits} visitas</span>
+          <span class="country-visits">${visits}</span>
         `;
         countriesList.appendChild(countryItem);
       });
@@ -479,7 +747,7 @@
     function displayHistory(daysData) {
       const historyGrid = document.getElementById('historyGrid');
       historyGrid.innerHTML = '';
-
+      
       // Ordenar días (los más recientes primero)
       const sortedDays = Object.entries(daysData)
         .sort((a, b) => {
@@ -488,10 +756,10 @@
           return new Date(2023, monthB - 1, dayB) - new Date(2023, monthA - 1, dayA);
         })
         .slice(0, 7); // Mostrar solo los últimos 7 días
-
+      
       sortedDays.forEach(([day, visits]) => {
         const earnings = (visits * (calculateCPM('default') / 1000)).toFixed(2);
-
+        
         const dayCard = document.createElement('div');
         dayCard.className = 'day-card';
         dayCard.innerHTML = `
@@ -505,41 +773,52 @@
       });
     }
 
-    // Cerrar sesión
-    logoutBtn.addEventListener('click', () => {
-      auth.signOut().then(() => {
-        window.location.href = 'index.html';
-      }).catch((error) => {
-        console.error("Error al cerrar sesión:", error);
-      });
-    });
-
-    // Observador de autenticación
-    auth.onAuthStateChanged((user) => {
+    // Observador de estado de autenticación
+    onAuthStateChanged(auth, (user) => {
       if (user) {
         // Usuario logueado
-        const displayName = user.displayName || user.email.split('@')[0];
-        userNameElement.textContent = `Hola, ${displayName}`;
-
-        // Cargar datos del usuario
+        authButtonText.textContent = 'Cerrar sesión';
+        authButton.onclick = () => signOut(auth);
+        
+        // Mostrar avatar si existe
+        if (user.photoURL) {
+          userAvatar.src = user.photoURL;
+          userAvatar.style.display = 'block';
+        }
+        
+        // Actualizar nombre de bienvenida
+        welcomeName.textContent = `Hola, ${user.displayName || user.email.split('@')[0]}`;
+        
+        // Cargar estadísticas
         loadStats();
       } else {
         // Usuario no logueado, redirigir a login
-        window.location.href = 'index.html';
+        window.location.href = 'login.html';
       }
+    });
+
+    // Event Listeners
+    shortenBtn.addEventListener('click', shortenUrl);
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(shortUrlElement.textContent);
+      copyBtn.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+      setTimeout(() => {
+        copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copiar';
+      }, 2000);
     });
 
     // Si estamos en la página de redirección (/r/:id)
     if (window.location.pathname.startsWith('/r/')) {
       const shortId = window.location.pathname.split('/r/')[1];
-
+      
       // Buscar la URL original
-      db.collection('urls').where('shortId', '==', shortId).get()
+      const urlRef = query(collection(db, "urls"), where("shortId", "==", shortId));
+      getDocs(urlRef)
         .then((querySnapshot) => {
           if (!querySnapshot.empty) {
             querySnapshot.forEach((doc) => {
               const urlData = doc.data();
-
+              
               // Registrar el click
               registerClick(shortId).then(() => {
                 // Redirigir a la URL original
@@ -547,12 +826,24 @@
               });
             });
           } else {
-            document.body.innerHTML = '<h1>Enlace no encontrado</h1><p>El enlace acortado no existe o ha sido eliminado.</p>';
+            document.body.innerHTML = `
+              <div style="text-align: center; padding: 50px;">
+                <h1>Enlace no encontrado</h1>
+                <p>El enlace acortado no existe o ha sido eliminado.</p>
+                <a href="/" style="color: var(--primary);">Volver al inicio</a>
+              </div>
+            `;
           }
         })
         .catch((error) => {
           console.error("Error buscando URL:", error);
-          document.body.innerHTML = '<h1>Error</h1><p>Ocurrió un error al procesar el enlace.</p>';
+          document.body.innerHTML = `
+            <div style="text-align: center; padding: 50px;">
+              <h1>Error</h1>
+              <p>Ocurrió un error al procesar el enlace.</p>
+              <a href="/" style="color: var(--primary);">Volver al inicio</a>
+            </div>
+          `;
         });
     }
   </script>
