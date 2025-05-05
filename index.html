@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URLy - Iniciar Sesión</title>
+  <style>
+    :root {
+      --primary: #1e40af;
+      --secondary: #f0f7ff;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f8fafc;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .login-container {
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    .logo {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .logo h1 {
+      color: var(--primary);
+      font-size: 2.2rem;
+      margin-bottom: 5px;
+    }
+    .logo p {
+      color: #64748b;
+      margin-top: 0;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #334155;
+    }
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    .btn {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: background 0.3s;
+      margin-bottom: 15px;
+    }
+    .btn:hover {
+      background: #1e3a8a;
+    }
+    .btn-google {
+      background: #4285F4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-google:hover {
+      background: #357ABD;
+    }
+    .btn-google img {
+      width: 20px;
+      margin-right: 10px;
+    }
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      color: #64748b;
+    }
+    .divider::before, .divider::after {
+      content: "";
+      flex: 1;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .divider::before {
+      margin-right: 10px;
+    }
+    .divider::after {
+      margin-left: 10px;
+    }
+    .switch-form {
+      text-align: center;
+      margin-top: 20px;
+      color: #64748b;
+    }
+    .switch-form a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .error-message {
+      color: #ef4444;
+      font-size: 14px;
+      margin-top: 5px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo">
+      <h1>URLy</h1>
+      <p>Acorta tus enlaces y gana dinero</p>
+    </div>
+
+    <!-- Formulario de Login -->
+    <div id="loginForm">
+      <div class="form-group">
+        <label for="loginEmail">Correo electrónico</label>
+        <input type="email" id="loginEmail" class="form-control" placeholder="tucorreo@ejemplo.com">
+        <div id="loginEmailError" class="error-message">Por favor ingresa un correo válido</div>
+      </div>
+      <div class="form-group">
+        <label for="loginPassword">Contraseña</label>
+        <input type="password" id="loginPassword" class="form-control" placeholder="••••••••">
+        <div id="loginPasswordError" class="error-message">La contraseña es requerida</div>
+      </div>
+      <button id="loginBtn" class="btn">Iniciar Sesión</button>
+
+      <div class="divider">o</div>
+
+      <button id="googleLoginBtn" class="btn btn-google">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Logo">
+        Iniciar con Google
+      </button>
+
+      <div class="switch-form">
+        ¿No tienes una cuenta? <a href="#" id="showRegister">Regístrate</a>
+      </div>
+    </div>
+
+    <!-- Formulario de Registro (oculto inicialmente) -->
+    <div id="registerForm" style="display: none;">
+      <div class="form-group">
+        <label for="registerEmail">Correo electrónico</label>
+        <input type="email" id="registerEmail" class="form-control" placeholder="tucorreo@ejemplo.com">
+        <div id="registerEmailError" class="error-message">Por favor ingresa un correo válido</div>
+      </div>
+      <div class="form-group">
+        <label for="registerPassword">Contraseña</label>
+        <input type="password" id="registerPassword" class="form-control" placeholder="••••••••">
+        <div id="registerPasswordError" class="error-message">La contraseña debe tener al menos 6 caracteres</div>
+      </div>
+      <div class="form-group">
+        <label for="confirmPassword">Confirmar Contraseña</label>
+        <input type="password" id="confirmPassword" class="form-control" placeholder="••••••••">
+        <div id="confirmPasswordError" class="error-message">Las contraseñas no coinciden</div>
+      </div>
+      <button id="registerBtn" class="btn">Registrarse</button>
+
+      <div class="switch-form">
+        ¿Ya tienes una cuenta? <a href="#" id="showLogin">Inicia Sesión</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+  <script>
+    // Configuración de Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAt79jrJpE2OZgb9MunFkjREeB3t4_Vznk",
+      authDomain: "urlyi-b3947.firebaseapp.com",
+      projectId: "urlyi-b3947",
+      storageBucket: "urlyi-b3947.appspot.com",
+      messagingSenderId: "732077984332",
+      appId: "1:732077984332:web:840e5c1eb645999ede82e9",
+      measurementId: "G-VPHWGQG61Q"
+    };
+
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const provider = new firebase.auth.GoogleAuthProvider();
+
+    // Referencias a elementos del DOM
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const showRegister = document.getElementById('showRegister');
+    const showLogin = document.getElementById('showLogin');
+    const loginBtn = document.getElementById('loginBtn');
+    const googleLoginBtn = document.getElementById('googleLoginBtn');
+    const registerBtn = document.getElementById('registerBtn');
+
+    // Mostrar formulario de registro
+    showRegister.addEventListener('click', (e) => {
+      e.preventDefault();
+      loginForm.style.display = 'none';
+      registerForm.style.display = 'block';
+    });
+
+    // Mostrar formulario de login
+    showLogin.addEventListener('click', (e) => {
+      e.preventDefault();
+      registerForm.style.display = 'none';
+      loginForm.style.display = 'block';
+    });
+
+    // Función para mostrar errores
+    function showError(elementId, message) {
+      const errorElement = document.getElementById(elementId);
+      errorElement.textContent = message;
+      errorElement.style.display = 'block';
+    }
+
+    // Función para ocultar errores
+    function hideError(elementId) {
+      document.getElementById(elementId).style.display = 'none';
+    }
+
+    // Validar email
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    // Login con email y contraseña
+    loginBtn.addEventListener('click', () => {
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      let isValid = true;
+
+      // Validaciones
+      if (!email || !isValidEmail(email)) {
+        showError('loginEmailError', 'Por favor ingresa un correo válido');
+        isValid = false;
+      } else {
+        hideError('loginEmailError');
+      }
+
+      if (!password || password.length < 6) {
+        showError('loginPasswordError', 'La contraseña debe tener al menos 6 caracteres');
+        isValid = false;
+      } else {
+        hideError('loginPasswordError');
+      }
+
+      if (!isValid) return;
+
+      // Iniciar sesión con Firebase
+      auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          // Redirigir a home.html después del login exitoso
+          window.location.href = 'home.html';
+        })
+        .catch((error) => {
+          let errorMessage;
+          switch (error.code) {
+            case 'auth/user-not-found':
+              errorMessage = 'No existe una cuenta con este correo';
+              break;
+            case 'auth/wrong-password':
+              errorMessage = 'Contraseña incorrecta';
+              break;
+            default:
+              errorMessage = 'Error al iniciar sesión. Intenta nuevamente.';
+          }
+          showError('loginPasswordError', errorMessage);
+        });
+    });
+
+    // Login con Google
+    googleLoginBtn.addEventListener('click', () => {
+      auth.signInWithPopup(provider)
+        .then((result) => {
+          // Guardar información adicional del usuario en Firestore
+          const user = result.user;
+          const userRef = db.collection('users').doc(user.uid);
+
+          userRef.get().then((doc) => {
+            if (!doc.exists) {
+              userRef.set({
+                email: user.email,
+                displayName: user.displayName || user.email.split('@')[0],
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+              });
+            } else {
+              userRef.update({
+                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+              });
+            }
+          });
+
+          // Redirigir a home.html
+          window.location.href = 'home.html';
+        })
+        .catch((error) => {
+          console.error("Error en login con Google:", error);
+          showError('loginPasswordError', 'Error al iniciar sesión con Google');
+        });
+    });
+
+    // Registro de nuevo usuario
+    registerBtn.addEventListener('click', () => {
+      const email = document.getElementById('registerEmail').value.trim();
+      const password = document.getElementById('registerPassword').value.trim();
+      const confirmPassword = document.getElementById('confirmPassword').value.trim();
+      let isValid = true;
+
+      // Validaciones
+      if (!email || !isValidEmail(email)) {
+        showError('registerEmailError', 'Por favor ingresa un correo válido');
+        isValid = false;
+      } else {
+        hideError('registerEmailError');
+      }
+
+      if (!password || password.length < 6) {
+        showError('registerPasswordError', 'La contraseña debe tener al menos 6 caracteres');
+        isValid = false;
+      } else {
+        hideError('registerPasswordError');
+      }
+
+      if (password !== confirmPassword) {
+        showError('confirmPasswordError', 'Las contraseñas no coinciden');
+        isValid = false;
+      } else {
+        hideError('confirmPasswordError');
+      }
+
+      if (!isValid) return;
+
+      // Crear usuario en Firebase
+      auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          // Guardar información adicional en Firestore
+          const user = userCredential.user;
+          return db.collection('users').doc(user.uid).set({
+            email: user.email,
+            displayName: user.email.split('@')[0],
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        })
+        .then(() => {
+          // Redirigir a home.html después del registro exitoso
+          window.location.href = 'home.html';
+        })
+        .catch((error) => {
+          let errorMessage;
+          switch (error.code) {
+            case 'auth/email-already-in-use':
+              errorMessage = 'Este correo ya está registrado';
+              break;
+            case 'auth/weak-password':
+              errorMessage = 'La contraseña es demasiado débil';
+              break;
+            default:
+              errorMessage = 'Error al registrarse. Intenta nuevamente.';
+          }
+          showError('registerPasswordError', errorMessage);
+        });
+    });
+
+    // Comprobar si el usuario ya está autenticado
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        // Si el usuario ya está logueado, redirigir a home.html
+        window.location.href = 'home.html';
+      }
+    });
+  </script>
+</body>
+</html>

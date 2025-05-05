@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URLy - Panel de Control</title>
+  <style>
+    :root {
+      --primary: #1e40af;
+      --secondary: #f0f7ff;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f8fafc;
+      margin: 0;
+      padding: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .user-info {
+      text-align: right;
+      margin-bottom: 10px;
+      padding: 10px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .user-name {
+      font-weight: 600;
+      color: var(--primary);
+    }
+    .logout-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .logout-btn:hover {
+      background: #dc2626;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .header h1 {
+      color: var(--primary);
+      font-size: 2.5rem;
+      margin-bottom: 5px;
+    }
+    .header p {
+      color: #64748b;
+    }
+    .url-form {
+      background: white;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #334155;
+    }
+    .form-control {
+      width: 100%;
+      padding: 10px 15px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: background 0.3s;
+    }
+    .btn:hover {
+      background: #1e3a8a;
+    }
+    .btn-copy {
+      background: #10b981;
+      margin-left: 10px;
+    }
+    .btn-copy:hover {
+      background: #0d9f6e;
+    }
+    .result-container {
+      display: none;
+      margin-top: 15px;
+    }
+    .stats-container {
+      background: white;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    .stat-card {
+      text-align: center;
+      padding: 15px;
+      border-radius: 8px;
+      background: var(--secondary);
+    }
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 10px 0;
+    }
+    .stat-label {
+      color: #64748b;
+      font-size: 14px;
+    }
+    .history-container {
+      background: white;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .history-title {
+      color: var(--primary);
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+    .history-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 15px;
+    }
+    .day-card {
+      background: var(--secondary);
+      border-radius: 8px;
+      padding: 15px;
+      text-align: center;
+    }
+    .day-date {
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .day-stats {
+      font-size: 12px;
+    }
+    .countries-container {
+      margin-top: 20px;
+    }
+    .country-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .country-name {
+      font-weight: 500;
+    }
+    .country-visits {
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Barra de usuario -->
+  <div class="user-info">
+    <span id="userName">Cargando...</span>
+    <button id="logoutBtn" class="logout-btn">Cerrar sesión</button>
+  </div>
+
+  <div class="header">
+    <h1>URLy</h1>
+    <p>Acorta tus enlaces y gana dinero</p>
+  </div>
+
+  <!-- Formulario para acortar URLs -->
+  <div class="url-form">
+    <div class="form-group">
+      <label for="longUrl">URL Larga</label>
+      <input type="text" id="longUrl" class="form-control" placeholder="https://ejemplo.com/pagina-larga">
+    </div>
+    <div class="form-group">
+      <label for="alias">Alias (opcional)</label>
+      <input type="text" id="alias" class="form-control" placeholder="mialias">
+    </div>
+    <button id="shortenBtn" class="btn">Acortar URL</button>
+
+    <div id="resultContainer" class="result-container">
+      <div class="form-group">
+        <label>Tu URL acortada</label>
+        <div style="display: flex;">
+          <input type="text" id="shortUrl" class="form-control" readonly>
+          <button id="copyBtn" class="btn btn-copy">Copiar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estadísticas -->
+  <div class="stats-container">
+    <div class="stat-card">
+      <div class="stat-label">Visitas Totales</div>
+      <div class="stat-value" id="totalVisits">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Ganancias Totales</div>
+      <div class="stat-value" id="totalEarnings">$0.00</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">CPM Promedio</div>
+      <div class="stat-value" id="avgCpm">$0.00</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Enlaces Activos</div>
+      <div class="stat-value" id="activeLinks">0</div>
+    </div>
+  </div>
+
+  <!-- Distribución por países -->
+  <div class="history-container">
+    <h3 class="history-title">Visitas por País</h3>
+    <div id="countriesList" class="countries-container">
+      <!-- Se llenará dinámicamente -->
+    </div>
+  </div>
+
+  <!-- Historial por días -->
+  <div class="history-container">
+    <h3 class="history-title">Historial Diario</h3>
+    <div class="history-grid" id="historyGrid">
+      <!-- Se llenará dinámicamente -->
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+  <script>
+    // Configuración de Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAt79jrJpE2OZgb9MunFkjREeB3t4_Vznk",
+      authDomain: "urlyi-b3947.firebaseapp.com",
+      projectId: "urlyi-b3947",
+      storageBucket: "urlyi-b3947.appspot.com",
+      messagingSenderId: "732077984332",
+      appId: "1:732077984332:web:840e5c1eb645999ede82e9",
+      measurementId: "G-VPHWGQG61Q"
+    };
+
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // Elementos del DOM
+    const userNameElement = document.getElementById('userName');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const shortenBtn = document.getElementById('shortenBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const resultContainer = document.getElementById('resultContainer');
+    const shortUrlInput = document.getElementById('shortUrl');
+
+    // Función para detectar el país del visitante
+    async function detectCountry() {
+      try {
+        const response = await fetch('https://ipapi.co/json/');
+        const data = await response.json();
+        return data.country || 'Desconocido';
+      } catch (error) {
+        console.error("Error detectando país:", error);
+        return 'Desconocido';
+      }
+    }
+
+    // Función para calcular CPM basado en país
+    function calculateCPM(country) {
+      const cpmRates = {
+        'US': 5.00,    // Estados Unidos
+        'UK': 4.50,    // Reino Unido
+        'DE': 4.00,    // Alemania
+        'FR': 3.50,    // Francia
+        'CA': 3.00,    // Canadá
+        'JP': 2.50,    // Japón
+        'BR': 1.50,    // Brasil
+        'MX': 1.20,    // México
+        'IN': 0.80,    // India
+        'default': 1.00 // Resto del mundo
+      };
+
+      return cpmRates[country] || cpmRates['default'];
+    }
+
+    // Función para registrar un click
+    async function registerClick(shortId) {
+      try {
+        const country = await detectCountry();
+        const cpm = calculateCPM(country);
+        const earnings = cpm / 1000; // CPM es por 1000 visitas
+
+        // Guardar en Firebase
+        await db.collection('clicks').add({
+          shortId,
+          country,
+          cpm,
+          earnings,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          userId: auth.currentUser.uid
+        });
+
+        // Actualizar contador en la URL
+        const urlRef = db.collection('urls').where('shortId', '==', shortId);
+        const querySnapshot = await urlRef.get();
+
+        querySnapshot.forEach(async (doc) => {
+          const currentClicks = doc.data().clicks || 0;
+          await db.collection('urls').doc(doc.id).update({
+            clicks: currentClicks + 1
+          });
+        });
+
+        return earnings;
+      } catch (error) {
+        console.error("Error registrando click:", error);
+        return 0.005; // Valor por defecto si hay error
+      }
+    }
+
+    // Acortar URL
+    shortenBtn.addEventListener('click', async () => {
+      const longUrl = document.getElementById('longUrl').value.trim();
+      const alias = document.getElementById('alias').value.trim();
+
+      if (!longUrl) {
+        alert('Por favor ingresa una URL');
+        return;
+      }
+
+      try {
+        // Generar ID corto aleatorio si no hay alias
+        const shortId = alias || Math.random().toString(36).substring(2, 8);
+        const shortUrl = `${window.location.origin}/r/${shortId}`;
+
+        // Guardar en Firebase
+        await db.collection("urls").add({
+          longUrl,
+          shortId,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          clicks: 0,
+          userId: auth.currentUser.uid
+        });
+
+        // Mostrar resultado
+        shortUrlInput.value = shortUrl;
+        resultContainer.style.display = 'block';
+
+        // Actualizar estadísticas
+        loadStats();
+
+      } catch (error) {
+        console.error("Error al acortar URL:", error);
+        alert('Ocurrió un error al acortar la URL');
+      }
+    });
+
+    // Copiar URL
+    copyBtn.addEventListener('click', () => {
+      shortUrlInput.select();
+      document.execCommand('copy');
+      alert('URL copiada al portapapeles');
+    });
+
+    // Cargar estadísticas
+    async function loadStats() {
+      try {
+        // Obtener URLs del usuario actual
+        const urlsQuery = db.collection('urls').where('userId', '==', auth.currentUser.uid);
+        const urlsSnapshot = await urlsQuery.get();
+
+        let totalVisits = 0;
+        let totalLinks = urlsSnapshot.size;
+        let totalEarnings = 0;
+        let visitsByCountry = {};
+        let visitsByDay = {};
+
+        // Obtener todos los clicks del usuario
+        const clicksQuery = db.collection('clicks').where('userId', '==', auth.currentUser.uid).orderBy('timestamp', 'desc');
+        const clicksSnapshot = await clicksQuery.get();
+
+        clicksSnapshot.forEach(doc => {
+          const clickData = doc.data();
+          totalVisits++;
+          totalEarnings += clickData.earnings || 0;
+
+          // Contar visitas por país
+          const country = clickData.country || 'Desconocido';
+          visitsByCountry[country] = (visitsByCountry[country] || 0) + 1;
+
+          // Contar visitas por día
+          const date = clickData.timestamp?.toDate() || new Date();
+          const dayKey = `${date.getDate()}/${date.getMonth() + 1}`;
+          visitsByDay[dayKey] = (visitsByDay[dayKey] || 0) + 1;
+        });
+
+        // Calcular CPM promedio
+        const avgCpm = totalVisits > 0 ? (totalEarnings / totalVisits * 1000) : 0;
+
+        // Actualizar UI
+        document.getElementById('totalVisits').textContent = totalVisits;
+        document.getElementById('totalEarnings').textContent = `$${totalEarnings.toFixed(2)}`;
+        document.getElementById('activeLinks').textContent = totalLinks;
+        document.getElementById('avgCpm').textContent = `$${avgCpm.toFixed(2)}`;
+
+        // Mostrar distribución por países
+        displayCountries(visitsByCountry);
+
+        // Mostrar historial por días
+        displayHistory(visitsByDay);
+
+      } catch (error) {
+        console.error("Error cargando estadísticas:", error);
+      }
+    }
+
+    // Mostrar distribución por países
+    function displayCountries(countriesData) {
+      const countriesList = document.getElementById('countriesList');
+      countriesList.innerHTML = '';
+
+      // Convertir a array y ordenar por visitas
+      const sortedCountries = Object.entries(countriesData)
+        .sort((a, b) => b[1] - a[1]);
+
+      sortedCountries.forEach(([country, visits]) => {
+        const countryItem = document.createElement('div');
+        countryItem.className = 'country-item';
+        countryItem.innerHTML = `
+          <span class="country-name">${getCountryName(country)}</span>
+          <span class="country-visits">${visits} visitas</span>
+        `;
+        countriesList.appendChild(countryItem);
+      });
+    }
+
+    // Función para obtener nombre completo del país
+    function getCountryName(code) {
+      const countryNames = {
+        'US': 'Estados Unidos',
+        'UK': 'Reino Unido',
+        'DE': 'Alemania',
+        'FR': 'Francia',
+        'CA': 'Canadá',
+        'JP': 'Japón',
+        'BR': 'Brasil',
+        'MX': 'México',
+        'IN': 'India',
+        'Desconocido': 'Desconocido'
+      };
+      return countryNames[code] || code;
+    }
+
+    // Mostrar historial por días
+    function displayHistory(daysData) {
+      const historyGrid = document.getElementById('historyGrid');
+      historyGrid.innerHTML = '';
+
+      // Ordenar días (los más recientes primero)
+      const sortedDays = Object.entries(daysData)
+        .sort((a, b) => {
+          const [dayA, monthA] = a[0].split('/').map(Number);
+          const [dayB, monthB] = b[0].split('/').map(Number);
+          return new Date(2023, monthB - 1, dayB) - new Date(2023, monthA - 1, dayA);
+        })
+        .slice(0, 7); // Mostrar solo los últimos 7 días
+
+      sortedDays.forEach(([day, visits]) => {
+        const earnings = (visits * (calculateCPM('default') / 1000)).toFixed(2);
+
+        const dayCard = document.createElement('div');
+        dayCard.className = 'day-card';
+        dayCard.innerHTML = `
+          <div class="day-date">${day}</div>
+          <div class="day-stats">
+            <div>${visits} visitas</div>
+            <div>$${earnings}</div>
+          </div>
+        `;
+        historyGrid.appendChild(dayCard);
+      });
+    }
+
+    // Cerrar sesión
+    logoutBtn.addEventListener('click', () => {
+      auth.signOut().then(() => {
+        window.location.href = 'index.html';
+      }).catch((error) => {
+        console.error("Error al cerrar sesión:", error);
+      });
+    });
+
+    // Observador de autenticación
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        // Usuario logueado
+        const displayName = user.displayName || user.email.split('@')[0];
+        userNameElement.textContent = `Hola, ${displayName}`;
+
+        // Cargar datos del usuario
+        loadStats();
+      } else {
+        // Usuario no logueado, redirigir a login
+        window.location.href = 'index.html';
+      }
+    });
+
+    // Si estamos en la página de redirección (/r/:id)
+    if (window.location.pathname.startsWith('/r/')) {
+      const shortId = window.location.pathname.split('/r/')[1];
+
+      // Buscar la URL original
+      db.collection('urls').where('shortId', '==', shortId).get()
+        .then((querySnapshot) => {
+          if (!querySnapshot.empty) {
+            querySnapshot.forEach((doc) => {
+              const urlData = doc.data();
+
+              // Registrar el click
+              registerClick(shortId).then(() => {
+                // Redirigir a la URL original
+                window.location.href = urlData.longUrl;
+              });
+            });
+          } else {
+            document.body.innerHTML = '<h1>Enlace no encontrado</h1><p>El enlace acortado no existe o ha sido eliminado.</p>';
+          }
+        })
+        .catch((error) => {
+          console.error("Error buscando URL:", error);
+          document.body.innerHTML = '<h1>Error</h1><p>Ocurrió un error al procesar el enlace.</p>';
+        });
+    }
+  </script>
+</body>
+</html>
