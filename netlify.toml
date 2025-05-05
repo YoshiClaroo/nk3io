@@ -1,0 +1,13 @@
+[build]
+  publish = "public"
+  command = "echo 'Building NK3IO'"
+
+[[redirects]]
+  from = "/r/*"
+  to = "/redirect.html?id=:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
