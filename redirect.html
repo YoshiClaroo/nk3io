@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redireccionando - NK3IO</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8fafc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+      padding: 20px;
+    }
+    .redirect-container {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      max-width: 500px;
+      width: 100%;
+    }
+    .spinner {
+      font-size: 50px;
+      color: #4f46e5;
+      margin-bottom: 20px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+    .ad-container {
+      margin: 30px 0;
+      padding: 20px;
+      background: #e0e7ff;
+      border-radius: 8px;
+    }
+    .ad-title {
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="redirect-container">
+    <div class="spinner">
+      <i class="fas fa-circle-notch"></i>
+    </div>
+    <h2>Redireccionando...</h2>
+    <p>Estás siendo redirigido a tu destino</p>
+    
+    <div class="ad-container">
+      <div class="ad-title">Patrocinado por nuestros anunciantes</div>
+      <div id="adContent">
+        <!-- Anuncio será cargado aquí -->
+        <img src="https://via.placeholder.com/300x250?text=Anuncio+NK3IO" alt="Anuncio" style="max-width:100%;">
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { db } from './js/firebase.js';
+    import { 
+      collection, query, where, getDocs, addDoc 
+    } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
+
+    // Obtener ID de la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const shortId = urlParams.get('id');
+
+    // Función para registrar click y redirigir
+    async function redirectToUrl() {
+      if (!shortId) {
+        window.location.href = '/';
+        return;
+      }
+
+      try {
+        // Buscar la URL original
+        const q = query(collection(db, "urls"), where("shortId", "==", shortId));
+        const querySnapshot = await getDocs(q);
+        
+        if (!querySnapshot.empty) {
+          const doc = querySnapshot.docs[0];
+          const urlData = doc.data();
+          
+          // Registrar el click
+          await addDoc(collection(db, "clicks"), {
+            shortId,
+            timestamp: new Date(),
+            userId: urlData.userId,
+            earnings: 0.005 // Valor base
+          });
+          
+          // Redirigir después de 3 segundos (para mostrar anuncio)
+          setTimeout(() => {
+            window.location.href = urlData.longUrl;
+          }, 3000);
+        } else {
+          window.location.href = '/';
+        }
+      } catch (error) {
+        console.error("Error en redirección:", error);
+        window.location.href = '/';
+      }
+    }
+
+    // Iniciar el proceso
+    redirectToUrl();
+  </script>
+</body>
+</html>
