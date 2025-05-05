@@ -3,58 +3,164 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>URLy - Iniciar Sesión</title>
+  <title>NK3IO - Acortador de URLs Premium</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --primary: #1e40af;
-      --secondary: #f0f7ff;
+      --primary: #4f46e5;
+      --primary-dark: #4338ca;
+      --secondary: #e0e7ff;
+      --dark: #1e293b;
+      --light: #f8fafc;
+      --gray: #64748b;
+      --success: #10b981;
+      --error: #ef4444;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f8fafc;
-      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
       display: flex;
-      justify-content: center;
-      align-items: center;
+      flex-direction: column;
       min-height: 100vh;
     }
-    .login-container {
-      background: white;
-      border-radius: 10px;
-      padding: 30px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
       width: 100%;
-      max-width: 400px;
+    }
+    header {
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .logo-icon {
+      color: var(--primary);
+      font-size: 28px;
+    }
+    .logo-text {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+    .nav-links {
+      display: flex;
+      gap: 25px;
+    }
+    .nav-link {
+      color: var(--gray);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    .nav-link:hover {
+      color: var(--primary);
+    }
+    .main {
+      flex: 1;
+      padding: 60px 0;
+    }
+    .hero {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    .hero h1 {
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+      color: var(--dark);
+      line-height: 1.2;
+    }
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--gray);
+      max-width: 700px;
+      margin: 0 auto 30px;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-bottom: 60px;
+    }
+    .feature-card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    .feature-icon {
+      font-size: 36px;
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+    .feature-title {
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      color: var(--dark);
+    }
+    .feature-desc {
+      color: var(--gray);
+    }
+    .auth-container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+    .auth-title {
       text-align: center;
       margin-bottom: 30px;
-    }
-    .logo h1 {
-      color: var(--primary);
-      font-size: 2.2rem;
-      margin-bottom: 5px;
-    }
-    .logo p {
-      color: #64748b;
-      margin-top: 0;
+      font-size: 1.8rem;
+      color: var(--dark);
     }
     .form-group {
       margin-bottom: 20px;
     }
-    .form-group label {
+    .form-label {
       display: block;
       margin-bottom: 8px;
       font-weight: 500;
-      color: #334155;
+      color: var(--dark);
     }
     .form-control {
       width: 100%;
-      padding: 12px 15px;
+      padding: 14px 16px;
       border: 1px solid #e2e8f0;
       border-radius: 8px;
       font-size: 16px;
-      box-sizing: border-box;
+      transition: border-color 0.3s;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
     }
     .btn {
       width: 100%;
@@ -70,16 +176,18 @@
       margin-bottom: 15px;
     }
     .btn:hover {
-      background: #1e3a8a;
+      background: var(--primary-dark);
     }
     .btn-google {
-      background: #4285F4;
+      background: white;
+      color: var(--dark);
+      border: 1px solid #e2e8f0;
       display: flex;
       align-items: center;
       justify-content: center;
     }
     .btn-google:hover {
-      background: #357ABD;
+      background: #f8fafc;
     }
     .btn-google img {
       width: 20px;
@@ -89,7 +197,7 @@
       display: flex;
       align-items: center;
       margin: 20px 0;
-      color: #64748b;
+      color: var(--gray);
     }
     .divider::before, .divider::after {
       content: "";
@@ -105,7 +213,7 @@
     .switch-form {
       text-align: center;
       margin-top: 20px;
-      color: #64748b;
+      color: var(--gray);
     }
     .switch-form a {
       color: var(--primary);
@@ -113,93 +221,500 @@
       font-weight: 500;
     }
     .error-message {
-      color: #ef4444;
+      color: var(--error);
       font-size: 14px;
       margin-top: 5px;
       display: none;
     }
+    footer {
+      background: var(--dark);
+      color: white;
+      padding: 40px 0;
+    }
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+    .footer-logo {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .footer-logo-icon {
+      color: var(--primary);
+    }
+    .footer-desc {
+      color: #94a3b8;
+      margin-bottom: 20px;
+    }
+    .social-links {
+      display: flex;
+      gap: 15px;
+    }
+    .social-link {
+      color: white;
+      font-size: 20px;
+      transition: color 0.3s;
+    }
+    .social-link:hover {
+      color: var(--primary);
+    }
+    .footer-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .footer-links {
+      list-style: none;
+    }
+    .footer-link {
+      margin-bottom: 12px;
+    }
+    .footer-link a {
+      color: #94a3b8;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer-link a:hover {
+      color: white;
+    }
+    .footer-bottom {
+      text-align: center;
+      padding-top: 30px;
+      border-top: 1px solid #334155;
+      color: #94a3b8;
+    }
+    .cookie-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--dark);
+      color: white;
+      padding: 20px;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      display: none;
+    }
+    .cookie-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+    .cookie-text {
+      flex: 1;
+      min-width: 300px;
+      color: #94a3b8;
+    }
+    .cookie-text a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .cookie-buttons {
+      display: flex;
+      gap: 10px;
+    }
+    .cookie-btn {
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .cookie-accept {
+      background: var(--primary);
+      color: white;
+      border: none;
+    }
+    .cookie-accept:hover {
+      background: var(--primary-dark);
+    }
+    .cookie-decline {
+      background: transparent;
+      color: white;
+      border: 1px solid #94a3b8;
+    }
+    .cookie-decline:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1001;
+      overflow-y: auto;
+    }
+    .modal-content {
+      background: white;
+      max-width: 800px;
+      margin: 50px auto;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .modal-header {
+      padding: 20px;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .modal-body {
+      padding: 30px;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+    .modal-body h2 {
+      margin: 20px 0 15px;
+      color: var(--dark);
+    }
+    .modal-body p {
+      margin-bottom: 15px;
+      color: var(--gray);
+    }
+    .modal-body ul {
+      margin-bottom: 20px;
+      padding-left: 20px;
+    }
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+      .auth-container {
+        padding: 30px 20px;
+      }
+      .modal-content {
+        margin: 20px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="login-container">
-    <div class="logo">
-      <h1>URLy</h1>
-      <p>Acorta tus enlaces y gana dinero</p>
+  <!-- Header -->
+  <header>
+    <div class="container header-content">
+      <a href="#" class="logo">
+        <i class="fas fa-link logo-icon"></i>
+        <span class="logo-text">NK3IO</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#features" class="nav-link">Características</a>
+        <a href="#how-it-works" class="nav-link">Cómo funciona</a>
+        <a href="#" id="termsLink" class="nav-link">Términos</a>
+      </nav>
     </div>
+  </header>
 
-    <!-- Formulario de Login -->
-    <div id="loginForm">
-      <div class="form-group">
-        <label for="loginEmail">Correo electrónico</label>
-        <input type="email" id="loginEmail" class="form-control" placeholder="tucorreo@ejemplo.com">
-        <div id="loginEmailError" class="error-message">Por favor ingresa un correo válido</div>
+  <!-- Main Content -->
+  <main class="main">
+    <div class="container">
+      <!-- Hero Section -->
+      <section class="hero">
+        <h1>Acorta, Comparte y Monetiza tus Enlaces</h1>
+        <p>NK3IO es la plataforma premium para acortar URLs, analizar tráfico y maximizar tus ganancias con cada click.</p>
+      </section>
+
+      <!-- Features Section -->
+      <section id="features" class="features">
+        <div class="feature-card">
+          <i class="fas fa-bolt feature-icon"></i>
+          <h3 class="feature-title">Acortamiento Instantáneo</h3>
+          <p class="feature-desc">Convierte enlaces largos en URLs cortas y memorables con un solo click.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-chart-line feature-icon"></i>
+          <h3 class="feature-title">Analíticas Avanzadas</h3>
+          <p class="feature-desc">Monitorea el rendimiento de tus enlaces con estadísticas en tiempo real.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-money-bill-wave feature-icon"></i>
+          <h3 class="feature-title">Monetización Inteligente</h3>
+          <p class="feature-desc">Gana dinero por cada visita con nuestro sistema de CPM adaptativo.</p>
+        </div>
+      </section>
+
+      <!-- How It Works Section -->
+      <section id="how-it-works" class="hero">
+        <h2>Cómo funciona NK3IO</h2>
+        <p>Sigue estos simples pasos para comenzar a acortar enlaces y monetizar tu tráfico:</p>
+        
+        <div class="features" style="margin-top: 40px;">
+          <div class="feature-card">
+            <div class="feature-title">1. Regístrate</div>
+            <p class="feature-desc">Crea una cuenta gratuita en NK3IO para acceder a todas las funciones.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-title">2. Acorta tu URL</div>
+            <p class="feature-desc">Pega tu enlace largo y obtén una versión corta al instante.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-title">3. Comparte y Gana</div>
+            <p class="feature-desc">Comparte tu enlace corto y comienza a generar ingresos.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Auth Section -->
+      <section class="auth-container">
+        <h2 class="auth-title">Inicia Sesión en NK3IO</h2>
+        
+        <!-- Formulario de Login -->
+        <div id="loginForm">
+          <div class="form-group">
+            <label for="loginEmail" class="form-label">Correo electrónico</label>
+            <input type="email" id="loginEmail" class="form-control" placeholder="tucorreo@ejemplo.com">
+            <div id="loginEmailError" class="error-message">Por favor ingresa un correo válido</div>
+          </div>
+          <div class="form-group">
+            <label for="loginPassword" class="form-label">Contraseña</label>
+            <input type="password" id="loginPassword" class="form-control" placeholder="••••••••">
+            <div id="loginPasswordError" class="error-message">La contraseña es requerida</div>
+          </div>
+          <button id="loginBtn" class="btn">Iniciar Sesión</button>
+          
+          <div class="divider">o</div>
+          
+          <button id="googleLoginBtn" class="btn btn-google">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Logo">
+            Iniciar con Google
+          </button>
+          
+          <div class="switch-form">
+            ¿No tienes una cuenta? <a href="#" id="showRegister">Regístrate</a>
+          </div>
+        </div>
+
+        <!-- Formulario de Registro (oculto inicialmente) -->
+        <div id="registerForm" style="display: none;">
+          <div class="form-group">
+            <label for="registerEmail" class="form-label">Correo electrónico</label>
+            <input type="email" id="registerEmail" class="form-control" placeholder="tucorreo@ejemplo.com">
+            <div id="registerEmailError" class="error-message">Por favor ingresa un correo válido</div>
+          </div>
+          <div class="form-group">
+            <label for="registerPassword" class="form-label">Contraseña</label>
+            <input type="password" id="registerPassword" class="form-control" placeholder="••••••••">
+            <div id="registerPasswordError" class="error-message">La contraseña debe tener al menos 6 caracteres</div>
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword" class="form-label">Confirmar Contraseña</label>
+            <input type="password" id="confirmPassword" class="form-control" placeholder="••••••••">
+            <div id="confirmPasswordError" class="error-message">Las contraseñas no coinciden</div>
+          </div>
+          <div class="form-group">
+            <input type="checkbox" id="acceptTerms" style="margin-right: 8px;">
+            <label for="acceptTerms">Acepto los <a href="#" id="termsLink2">Términos y Condiciones</a></label>
+            <div id="termsError" class="error-message">Debes aceptar los términos y condiciones</div>
+          </div>
+          <button id="registerBtn" class="btn">Registrarse</button>
+          
+          <div class="switch-form">
+            ¿Ya tienes una cuenta? <a href="#" id="showLogin">Inicia Sesión</a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-col">
+          <div class="footer-logo">
+            <i class="fas fa-link footer-logo-icon"></i>
+            <span>NK3IO</span>
+          </div>
+          <p class="footer-desc">La plataforma premium para acortar URLs y monetizar tu tráfico en línea.</p>
+          <div class="social-links">
+            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-title">Enlaces Rápidos</h3>
+          <ul class="footer-links">
+            <li class="footer-link"><a href="#">Inicio</a></li>
+            <li class="footer-link"><a href="#features">Características</a></li>
+            <li class="footer-link"><a href="#how-it-works">Cómo funciona</a></li>
+            <li class="footer-link"><a href="#" id="privacyLink">Política de Privacidad</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-title">Recursos</h3>
+          <ul class="footer-links">
+            <li class="footer-link"><a href="#">Blog</a></li>
+            <li class="footer-link"><a href="#">API para desarrolladores</a></li>
+            <li class="footer-link"><a href="#">Centro de ayuda</a></li>
+            <li class="footer-link"><a href="#">Preguntas frecuentes</a></li>
+          </ul>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="loginPassword">Contraseña</label>
-        <input type="password" id="loginPassword" class="form-control" placeholder="••••••••">
-        <div id="loginPasswordError" class="error-message">La contraseña es requerida</div>
-      </div>
-      <button id="loginBtn" class="btn">Iniciar Sesión</button>
-
-      <div class="divider">o</div>
-
-      <button id="googleLoginBtn" class="btn btn-google">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Logo">
-        Iniciar con Google
-      </button>
-
-      <div class="switch-form">
-        ¿No tienes una cuenta? <a href="#" id="showRegister">Regístrate</a>
+      <div class="footer-bottom">
+        <p>&copy; 2023 NK3IO. Todos los derechos reservados.</p>
       </div>
     </div>
+  </footer>
 
-    <!-- Formulario de Registro (oculto inicialmente) -->
-    <div id="registerForm" style="display: none;">
-      <div class="form-group">
-        <label for="registerEmail">Correo electrónico</label>
-        <input type="email" id="registerEmail" class="form-control" placeholder="tucorreo@ejemplo.com">
-        <div id="registerEmailError" class="error-message">Por favor ingresa un correo válido</div>
+  <!-- Cookie Banner -->
+  <div class="cookie-banner" id="cookieBanner">
+    <div class="container cookie-content">
+      <div class="cookie-text">
+        Utilizamos cookies para mejorar tu experiencia en nuestro sitio web. Al continuar navegando, aceptas nuestro uso de cookies. <a href="#" id="cookiePolicyLink">Más información</a>
       </div>
-      <div class="form-group">
-        <label for="registerPassword">Contraseña</label>
-        <input type="password" id="registerPassword" class="form-control" placeholder="••••••••">
-        <div id="registerPasswordError" class="error-message">La contraseña debe tener al menos 6 caracteres</div>
+      <div class="cookie-buttons">
+        <button class="cookie-btn cookie-decline" id="declineCookies">Rechazar</button>
+        <button class="cookie-btn cookie-accept" id="acceptCookies">Aceptar</button>
       </div>
-      <div class="form-group">
-        <label for="confirmPassword">Confirmar Contraseña</label>
-        <input type="password" id="confirmPassword" class="form-control" placeholder="••••••••">
-        <div id="confirmPasswordError" class="error-message">Las contraseñas no coinciden</div>
-      </div>
-      <button id="registerBtn" class="btn">Registrarse</button>
+    </div>
+  </div>
 
-      <div class="switch-form">
-        ¿Ya tienes una cuenta? <a href="#" id="showLogin">Inicia Sesión</a>
+  <!-- Terms Modal -->
+  <div class="modal" id="termsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Términos y Condiciones</h3>
+        <button class="modal-close" id="closeTermsModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h2>1. Términos Generales</h2>
+        <p>Al acceder y utilizar el servicio NK3IO, aceptas cumplir con estos términos y condiciones. Si no estás de acuerdo con alguna parte de estos términos, no debes utilizar nuestro servicio.</p>
+        
+        <h2>2. Uso del Servicio</h2>
+        <p>NK3IO proporciona un servicio de acortamiento de URLs y análisis de tráfico. Al utilizar nuestro servicio, aceptas:</p>
+        <ul>
+          <li>No utilizar el servicio para fines ilegales o maliciosos.</li>
+          <li>No acortar enlaces que violen derechos de autor o propiedad intelectual.</li>
+          <li>No utilizar el servicio para distribuir malware o contenido dañino.</li>
+        </ul>
+        
+        <h2>3. Monetización</h2>
+        <p>NK3IO permite monetizar tus enlaces acortados. Las tarifas de CPM pueden variar según el país de origen del tráfico y otros factores. NK3IO se reserva el derecho de modificar las tarifas en cualquier momento.</p>
+        
+        <h2>4. Privacidad</h2>
+        <p>Recopilamos cierta información sobre el tráfico generado por tus enlaces para proporcionar estadísticas y mejorar nuestro servicio. Consulta nuestra Política de Privacidad para más detalles.</p>
+        
+        <h2>5. Limitación de Responsabilidad</h2>
+        <p>NK3IO no será responsable por ningún daño directo, indirecto, incidental o consecuente que resulte del uso o la imposibilidad de usar nuestro servicio.</p>
+        
+        <h2>6. Modificaciones</h2>
+        <p>Nos reservamos el derecho de modificar estos términos en cualquier momento. Las modificaciones entrarán en vigor inmediatamente después de su publicación en el sitio.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Privacy Modal -->
+  <div class="modal" id="privacyModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Política de Privacidad</h3>
+        <button class="modal-close" id="closePrivacyModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h2>1. Información que Recopilamos</h2>
+        <p>Cuando utilizas NK3IO, podemos recopilar la siguiente información:</p>
+        <ul>
+          <li>Información de registro (nombre, correo electrónico)</li>
+          <li>Direcciones IP y datos de ubicación aproximada</li>
+          <li>Información sobre los dispositivos y navegadores utilizados</li>
+          <li>Datos de rendimiento de los enlaces acortados</li>
+        </ul>
+        
+        <h2>2. Uso de la Información</h2>
+        <p>Utilizamos la información recopilada para:</p>
+        <ul>
+          <li>Proveer y mejorar nuestro servicio</li>
+          <li>Analizar el rendimiento de los enlaces</li>
+          <li>Personalizar la experiencia del usuario</li>
+          <li>Prevenir fraudes y usos indebidos</li>
+        </ul>
+        
+        <h2>3. Cookies y Tecnologías Similares</h2>
+        <p>Utilizamos cookies para:</p>
+        <ul>
+          <li>Recordar tus preferencias</li>
+          <li>Analizar el tráfico del sitio</li>
+          <li>Mejorar el rendimiento del servicio</li>
+        </ul>
+        
+        <h2>4. Compartir Información</h2>
+        <p>No vendemos ni compartimos tu información personal con terceros, excepto:</p>
+        <ul>
+          <li>Cuando sea necesario para proveer el servicio</li>
+          <li>Para cumplir con requerimientos legales</li>
+          <li>Para proteger nuestros derechos y propiedad</li>
+        </ul>
+        
+        <h2>5. Seguridad</h2>
+        <p>Implementamos medidas de seguridad para proteger tu información, pero ninguna transmisión por Internet es 100% segura.</p>
       </div>
     </div>
   </div>
 
   <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+    import { 
+      getAuth, 
+      signInWithPopup, 
+      GoogleAuthProvider, 
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { 
+      getFirestore, 
+      collection, 
+      addDoc, 
+      doc, 
+      setDoc, 
+      getDoc 
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-  <script>
-    // Configuración de Firebase
+    // Your web app's Firebase configuration
     const firebaseConfig = {
-      apiKey: "AIzaSyAt79jrJpE2OZgb9MunFkjREeB3t4_Vznk",
-      authDomain: "urlyi-b3947.firebaseapp.com",
-      projectId: "urlyi-b3947",
-      storageBucket: "urlyi-b3947.appspot.com",
-      messagingSenderId: "732077984332",
-      appId: "1:732077984332:web:840e5c1eb645999ede82e9",
-      measurementId: "G-VPHWGQG61Q"
+      apiKey: "AIzaSyAVZMKlYrDeM1ao14Hfzoiz4g4H0HF4HEU",
+      authDomain: "nk3io-fba5a.firebaseapp.com",
+      projectId: "nk3io-fba5a",
+      storageBucket: "nk3io-fba5a.appspot.com",
+      messagingSenderId: "369749670993",
+      appId: "1:369749670993:web:c180f70dc68eedc9228c70",
+      measurementId: "G-EVJ5805FY0"
     };
 
-    // Inicializar Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    const provider = new firebase.auth.GoogleAuthProvider();
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
 
     // Referencias a elementos del DOM
     const loginForm = document.getElementById('loginForm');
@@ -209,19 +724,76 @@
     const loginBtn = document.getElementById('loginBtn');
     const googleLoginBtn = document.getElementById('googleLoginBtn');
     const registerBtn = document.getElementById('registerBtn');
+    const acceptTerms = document.getElementById('acceptTerms');
+    const termsLink = document.getElementById('termsLink');
+    const termsLink2 = document.getElementById('termsLink2');
+    const privacyLink = document.getElementById('privacyLink');
+    const cookiePolicyLink = document.getElementById('cookiePolicyLink');
+    const termsModal = document.getElementById('termsModal');
+    const privacyModal = document.getElementById('privacyModal');
+    const closeTermsModal = document.getElementById('closeTermsModal');
+    const closePrivacyModal = document.getElementById('closePrivacyModal');
+    const cookieBanner = document.getElementById('cookieBanner');
+    const acceptCookies = document.getElementById('acceptCookies');
+    const declineCookies = document.getElementById('declineCookies');
 
-    // Mostrar formulario de registro
-    showRegister.addEventListener('click', (e) => {
-      e.preventDefault();
-      loginForm.style.display = 'none';
-      registerForm.style.display = 'block';
+    // Mostrar banner de cookies si no se ha aceptado/rechazado
+    if (!localStorage.getItem('cookieConsent')) {
+      cookieBanner.style.display = 'block';
+    }
+
+    // Manejar aceptación de cookies
+    acceptCookies.addEventListener('click', () => {
+      localStorage.setItem('cookieConsent', 'accepted');
+      cookieBanner.style.display = 'none';
+      // Aquí podrías cargar scripts de analytics/tracking
     });
 
-    // Mostrar formulario de login
-    showLogin.addEventListener('click', (e) => {
+    // Manejar rechazo de cookies
+    declineCookies.addEventListener('click', () => {
+      localStorage.setItem('cookieConsent', 'declined');
+      cookieBanner.style.display = 'none';
+    });
+
+    // Mostrar modal de términos
+    termsLink.addEventListener('click', (e) => {
       e.preventDefault();
-      registerForm.style.display = 'none';
-      loginForm.style.display = 'block';
+      termsModal.style.display = 'block';
+    });
+
+    termsLink2.addEventListener('click', (e) => {
+      e.preventDefault();
+      termsModal.style.display = 'block';
+    });
+
+    // Mostrar modal de privacidad
+    privacyLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      privacyModal.style.display = 'block';
+    });
+
+    cookiePolicyLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      privacyModal.style.display = 'block';
+    });
+
+    // Cerrar modales
+    closeTermsModal.addEventListener('click', () => {
+      termsModal.style.display = 'none';
+    });
+
+    closePrivacyModal.addEventListener('click', () => {
+      privacyModal.style.display = 'none';
+    });
+
+    // Cerrar modales al hacer clic fuera del contenido
+    window.addEventListener('click', (e) => {
+      if (e.target === termsModal) {
+        termsModal.style.display = 'none';
+      }
+      if (e.target === privacyModal) {
+        privacyModal.style.display = 'none';
+      }
     });
 
     // Función para mostrar errores
@@ -240,6 +812,20 @@
     function isValidEmail(email) {
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
+
+    // Mostrar formulario de registro
+    showRegister.addEventListener('click', (e) => {
+      e.preventDefault();
+      loginForm.style.display = 'none';
+      registerForm.style.display = 'block';
+    });
+
+    // Mostrar formulario de login
+    showLogin.addEventListener('click', (e) => {
+      e.preventDefault();
+      registerForm.style.display = 'none';
+      loginForm.style.display = 'block';
+    });
 
     // Login con email y contraseña
     loginBtn.addEventListener('click', () => {
@@ -265,7 +851,7 @@
       if (!isValid) return;
 
       // Iniciar sesión con Firebase
-      auth.signInWithEmailAndPassword(email, password)
+      signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           // Redirigir a home.html después del login exitoso
           window.location.href = 'home.html';
@@ -288,27 +874,25 @@
 
     // Login con Google
     googleLoginBtn.addEventListener('click', () => {
-      auth.signInWithPopup(provider)
+      signInWithPopup(auth, provider)
         .then((result) => {
           // Guardar información adicional del usuario en Firestore
           const user = result.user;
-          const userRef = db.collection('users').doc(user.uid);
-
-          userRef.get().then((doc) => {
-            if (!doc.exists) {
-              userRef.set({
+          const userRef = doc(db, 'users', user.uid);
+          
+          getDoc(userRef).then((doc) => {
+            if (!doc.exists()) {
+              setDoc(userRef, {
                 email: user.email,
                 displayName: user.displayName || user.email.split('@')[0],
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                createdAt: new Date(),
+                lastLogin: new Date()
               });
             } else {
-              userRef.update({
-                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-              });
+              setDoc(userRef, { lastLogin: new Date() }, { merge: true });
             }
           });
-
+          
           // Redirigir a home.html
           window.location.href = 'home.html';
         })
@@ -347,19 +931,26 @@
         hideError('confirmPasswordError');
       }
 
+      if (!acceptTerms.checked) {
+        showError('termsError', 'Debes aceptar los términos y condiciones');
+        isValid = false;
+      } else {
+        hideError('termsError');
+      }
+
       if (!isValid) return;
 
       // Crear usuario en Firebase
-      auth.createUserWithEmailAndPassword(email, password)
+      createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           // Guardar información adicional en Firestore
           const user = userCredential.user;
-          return db.collection('users').doc(user.uid).set({
+          return setDoc(doc(db, 'users', user.uid), {
             email: user.email,
             displayName: user.email.split('@')[0],
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-          });
+            createdAt: new Date(),
+            lastLogin: new Date()
+          };
         })
         .then(() => {
           // Redirigir a home.html después del registro exitoso
@@ -382,7 +973,7 @@
     });
 
     // Comprobar si el usuario ya está autenticado
-    auth.onAuthStateChanged((user) => {
+    onAuthStateChanged(auth, (user) => {
       if (user) {
         // Si el usuario ya está logueado, redirigir a home.html
         window.location.href = 'home.html';
