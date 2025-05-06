@@ -309,111 +309,120 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
   
   <script>
-    // Configuración Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyAVZMKlYrDeM1ao14Hfzoiz4g4H0HF4HEU",
-      authDomain: "nk3io-fba5a.firebaseapp.com",
-      projectId: "nk3io-fba5a",
-      storageBucket: "nk3io-fba5a.appspot.com",
-      messagingSenderId: "369749670993",
-      appId: "1:369749670993:web:c180f70dc68eedc9228c70",
-      measurementId: "G-EVJ5805FY0"
-    };
+  // Configuración Firebase (ya está en tu código)
+  const firebaseConfig = {
+    apiKey: "AIzaSyAVZMKlYrDeM1ao14Hfzoiz4g4H0HF4HEU",
+    authDomain: "nk3io-fba5a.firebaseapp.com",
+    projectId: "nk3io-fba5a",
+    storageBucket: "nk3io-fba5a.appspot.com",
+    messagingSenderId: "369749670993",
+    appId: "1:369749670993:web:c180f70dc68eedc9228c70",
+    measurementId: "G-EVJ5805FY0"
+  };
 
-    // Inicializar Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+  // Inicializar Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
 
-    // Elementos del DOM
-    const urlsList = document.getElementById('urlsList');
-    const emptyState = document.getElementById('emptyState');
+  // Elementos del DOM
+  const urlsList = document.getElementById('urlsList');
+  const emptyState = document.getElementById('emptyState');
 
-    // Cargar URLs del usuario
-    function loadUserUrls() {
-      auth.onAuthStateChanged((user) => {
-        if (user) {
-          db.collection("urls")
-            .where("userId", "==", user.uid)
-            .orderBy("createdAt", "desc")
-            .get()
-            .then((querySnapshot) => {
-              urlsList.innerHTML = '';
-              
-              if (querySnapshot.empty) {
-                emptyState.style.display = 'block';
-                return;
-              }
-              
-              emptyState.style.display = 'none';
-              
-              querySnapshot.forEach((doc) => {
-                const urlData = doc.data();
-                const shortUrl = `${window.location.origin}/r/${urlData.shortId}`;
-                const statsUrl = `${window.location.origin}/stats/${urlData.shortId}`;
-                
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                  <td>
-                    <a href="${shortUrl}" target="_blank" class="short-url">
-                      nk3.io/${urlData.shortId}
-                    </a>
-                  </td>
-                  <td class="long-url" title="${urlData.longUrl}">
-                    ${urlData.longUrl}
-                  </td>
-                  <td>
-                    <div class="stats-cell">
-                      <span class="stat-item">
-                        <i class="fas fa-eye"></i>
-                        ${urlData.clicks || 0} visitas
-                      </span>
-                      <span class="stat-item">
-                        <i class="fas fa-money-bill-wave"></i>
-                        $${((urlData.clicks || 0) * 0.005).toFixed(2)}
-                      </span>
-                    </div>
-                  </td>
-                  <td class="actions-cell">
-                    <button class="action-btn" onclick="copyUrl('${shortUrl}')" title="Copiar">
-                      <i class="fas fa-copy"></i>
-                    </button>
-                    <button class="action-btn" onclick="viewStats('${statsUrl}')" title="Estadísticas">
-                      <i class="fas fa-chart-bar"></i>
-                    </button>
-                  </td>
-                `;
-                
-                urlsList.appendChild(row);
-              });
-            })
-            .catch((error) => {
-              console.error("Error cargando URLs:", error);
-            });
-        } else {
-          window.location.href = "login.html";
-        }
+  // Cargar URLs del usuario (versión optimizada)
+  async function loadUserUrls() {
+    try {
+      const user = auth.currentUser;
+      
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      const querySnapshot = await db.collection("urls")
+        .where("userId", "==", user.uid)
+        .orderBy("createdAt", "desc")
+        .get();
+
+      urlsList.innerHTML = '';
+      
+      if (querySnapshot.empty) {
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      
+      querySnapshot.forEach((doc) => {
+        const urlData = doc.data();
+        const shortUrl = `${window.location.origin}/r/${urlData.shortId}`;
+        const statsUrl = `${window.location.origin}/stats/${urlData.shortId}`;
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>
+            <a href="${shortUrl}" target="_blank" class="short-url">
+              nk3.io/${urlData.shortId}
+            </a>
+          </td>
+          <td class="long-url" title="${urlData.longUrl}">
+            ${urlData.longUrl}
+          </td>
+          <td>
+            <div class="stats-cell">
+              <span class="stat-item">
+                <i class="fas fa-eye"></i>
+                ${urlData.clicks || 0} visitas
+              </span>
+              <span class="stat-item">
+                <i class="fas fa-money-bill-wave"></i>
+                $${((urlData.clicks || 0) * 0.005).toFixed(2)}
+              </span>
+            </div>
+          </td>
+          <td class="actions-cell">
+            <button class="action-btn" onclick="copyUrl('${shortUrl}')" title="Copiar">
+              <i class="fas fa-copy"></i>
+            </button>
+            <button class="action-btn" onclick="viewStats('${statsUrl}')" title="Estadísticas">
+              <i class="fas fa-chart-bar"></i>
+            </button>
+          </td>
+        `;
+        
+        urlsList.appendChild(row);
       });
+    } catch (error) {
+      console.error("Error cargando URLs:", error);
+      // Opcional: mostrar mensaje al usuario
+      alert("Ocurrió un error al cargar tus URLs. Por favor recarga la página.");
     }
+  }
 
-    // Función para copiar URL
-    function copyUrl(url) {
-      navigator.clipboard.writeText(url)
-        .then(() => {
-          alert("URL copiada al portapapeles: " + url);
-        })
-        .catch((err) => {
-          console.error("Error al copiar:", err);
-        });
+  // Función para copiar URL (sin cambios)
+  function copyUrl(url) {
+    navigator.clipboard.writeText(url)
+      .then(() => {
+        alert("URL copiada al portapapeles: " + url);
+      })
+      .catch((err) => {
+        console.error("Error al copiar:", err);
+      });
+  }
+
+  // Función para ver estadísticas (sin cambios)
+  function viewStats(url) {
+    window.open(url, '_blank');
+  }
+
+  // Escuchar cambios de autenticación y cargar URLs
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      loadUserUrls();
+    } else {
+      window.location.href = "login.html";
     }
-
-    // Función para ver estadísticas
-    function viewStats(url) {
-      window.open(url, '_blank');
-    }
-
-    // Cargar URLs al iniciar
-    loadUserUrls();
-  </script>
+  });
+</script>
 </body>
 </html>
