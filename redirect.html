@@ -64,67 +64,50 @@
   </div>
 
   <script type="module">
-    import { db } from './js/firebase.js';
-    import { 
-      collection, query, where, getDocs, addDoc 
-    } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
+  import { db } from './firebase.js';
+  import { 
+    collection, query, where, getDocs, 
+    updateDoc, increment 
+  } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js';
 
-    // Obtener el ID de la URL (ej: nk3io.netlify.app/r?id=abc123)
-const urlParams = new URLSearchParams(window.location.search);
-const shortCode = urlParams.get('id');  // "abc123"
+  const urlParams = new URLSearchParams(window.location.search);
+  const shortId = urlParams.get('id');
 
-if (!shortCode) {
-  window.location.href = '/';  // Redirige si no hay ID
-  return;
-    }
+  if (!shortId) {
+    window.location.href = '/';
+    return;
+  }
 
   try {
-    / Buscar en Firestore (usando shortCode, no shortId)
-const q = query(collection(db, "urls"), where("shortCode", "==", shortCode));
-const querySnapshot = await getDocs(q);
+    const q = query(collection(db, "urls"), where("shortId", "==", shortId));
+    const querySnapshot = await getDocs(q);
 
-if (querySnapshot.empty) {
-  window.location.href = '/';  // Redirige si no existe el código
-  return;
-}
-
-      
-      // Actualizar contador de clicks
-      await updateDoc(doc.ref, {
-        clicks: increment(1)
-      });
-
-      // Registrar el click (opcional)
-      await addDoc(collection(db, "clicks"), {
-        shortCode,
-        timestamp: new Date(),
-        userId: urlData.userId
-      });
-
-      // Validar y formatear URL
-      let targetUrl = urlData.longUrl;
-      if (!targetUrl.startsWith('http')) {
-        targetUrl = 'https://' + targetUrl;
-      }
-
-      // Redirigir después de 3 segundos
-const urlData = querySnapshot.docs[0].data();
-setTimeout(() => {
-  window.location.href = urlData.longUrl.startsWith('http') 
-    ? urlData.longUrl 
-    : `https://${urlData.longUrl}`;
-}, 3000);
-    } else {
-      window.location.href = '/404.html';  // Página de error personalizada
+    if (querySnapshot.empty) {
+      window.location.href = '/404.html';
+      return;
     }
+
+    const docRef = querySnapshot.docs[0].ref;
+    const urlData = querySnapshot.docs[0].data();
+
+    // Actualizar contador
+    await updateDoc(docRef, {
+      clicks: increment(1),
+      lastClick: new Date()
+    });
+
+    // Redirigir después de 3 segundos (para mostrar anuncio)
+    setTimeout(() => {
+      const targetUrl = urlData.longUrl.startsWith('http') 
+        ? urlData.longUrl 
+        : `https://${urlData.longUrl}`;
+      window.location.href = targetUrl;
+    }, 3000);
+
   } catch (error) {
     console.error("Error en redirección:", error);
     window.location.href = '/';
   }
-}
-
-// Iniciar el proceso
-redirectToUrl();
-  </script>
+</script>
 </body>
 </html>
