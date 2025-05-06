@@ -3,9 +3,10 @@
   publish = "."
 
 [[redirects]]
-  from = "/r/:id"  # Captura lo que venga después de /r/ como parámetro :id
-  to = "/redirect.html?id=:id"  # Pasa el parámetro a redirect.html
+  from = "/r"  # Ruta base
+  to = "/redirect.html"  # Pasa el parámetro id automáticamente
   status = 200
+  force = true  # Obliga a Netlify a respetar los parámetros
 
 [[redirects]]
   from = "/*"
