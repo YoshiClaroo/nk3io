@@ -682,16 +682,16 @@
         const shortCode = customAlias || generateShortCode();
         const shortUrl = `https://nk3io.netlify.app/r?id=${shortCode}`;
         
-        // Save to Firestore
-        await setDoc(doc(db, 'urls', shortCode), {
-          longUrl: processedUrl,
-          shortCode: shortCode,
-          createdAt: new Date(),
-          userId: auth.currentUser.uid,
-          clicks: 0,
-          alias: customAlias || null,
-          tags: document.getElementById('tags').value.trim().split(',').map(tag => tag.trim()) || []
-        });
+        // En la función de acortamiento:
+await setDoc(doc(db, 'urls', shortId), {
+  longUrl: processedUrl,
+  shortId: shortId,  // Cambiado de shortCode a shortId
+  createdAt: new Date(),
+  userId: auth.currentUser.uid,
+  clicks: 0,
+  alias: customAlias || null,
+  tags: tagsInput.value.trim().split(',').map(tag => tag.trim()) || []
+});
         
         // Show result
         shortUrlElement.textContent = shortUrl;
