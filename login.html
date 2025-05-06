@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NK3IO - Iniciar Sesión</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <title>NK3IO - Acortador de URLs Premium</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
     :root {
       --primary: #4f46e5;
@@ -13,214 +13,306 @@
       --light: #f8fafc;
       --gray: #64748b;
     }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: var(--light);
       color: var(--dark);
+      margin: 0;
       line-height: 1.6;
     }
+    
     .container {
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 20px;
-      width: 100%;
     }
+    
+    /* Header */
     header {
       background-color: white;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      padding: 20px 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 15px 0;
       position: sticky;
       top: 0;
       z-index: 100;
     }
+    
     .header-content {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
+    
     .logo {
       display: flex;
       align-items: center;
       gap: 10px;
       text-decoration: none;
     }
+    
     .logo-icon {
       color: var(--primary);
       font-size: 28px;
     }
+    
     .logo-text {
       font-size: 24px;
       font-weight: 700;
       color: var(--dark);
     }
-    .main {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 80vh;
-      text-align: center;
-    }
-    .login-box {
-      background: white;
-      border-radius: 12px;
-      padding: 40px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-      max-width: 500px;
-      width: 100%;
-    }
-    .login-title {
-      font-size: 2rem;
-      margin-bottom: 20px;
-      color: var(--dark);
-    }
-    .login-description {
-      color: var(--gray);
-      margin-bottom: 30px;
-    }
+    
     .auth-button {
       background: var(--primary);
       color: white;
       border: none;
-      padding: 14px 25px;
+      padding: 10px 20px;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 16px;
       font-weight: 500;
-      transition: background 0.3s;
-      display: inline-flex;
+      display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      transition: background 0.3s;
     }
+    
     .auth-button:hover {
       background: var(--primary-dark);
     }
+    
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 80px 0;
+    }
+    
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: var(--dark);
+    }
+    
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--gray);
+      max-width: 700px;
+      margin: 0 auto 40px;
+    }
+    
+    /* Features */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin: 60px auto;
+      max-width: 1000px;
+    }
+    
+    .feature-card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      transition: transform 0.3s;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .feature-icon {
+      font-size: 36px;
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+    
+    .feature-title {
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      color: var(--dark);
+    }
+    
+    .feature-desc {
+      color: var(--gray);
+    }
+    
+    /* How It Works */
+    .how-it-works {
+      background: var(--primary);
+      color: white;
+      padding: 60px 0;
+      text-align: center;
+    }
+    
+    .steps {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+    
+    .step {
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 25px;
+      width: 200px;
+    }
+    
+    .step-number {
+      background: white;
+      color: var(--primary);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      font-weight: bold;
+    }
+    
+    /* Footer */
     footer {
       background: var(--dark);
       color: white;
-      padding: 30px 0;
+      padding: 40px 0;
       text-align: center;
     }
+    
     .footer-links {
       display: flex;
       justify-content: center;
-      gap: 20px;
+      gap: 30px;
       margin-bottom: 20px;
     }
+    
     .footer-link {
       color: #94a3b8;
       text-decoration: none;
       transition: color 0.3s;
     }
+    
     .footer-link:hover {
       color: white;
     }
-    .cookie-banner {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: var(--dark);
-      color: white;
-      padding: 20px;
-      z-index: 1000;
-      display: none;
-    }
-    .cookie-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-    }
-    .cookie-text {
-      flex: 1;
-      min-width: 300px;
-      color: #94a3b8;
-    }
-    .cookie-text a {
-      color: var(--primary);
-      text-decoration: none;
-    }
-    .cookie-buttons {
-      display: flex;
-      gap: 10px;
-    }
-    .cookie-btn {
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 500;
-    }
-    .cookie-accept {
-      background: var(--primary);
-      color: white;
-      border: none;
-    }
-    .cookie-decline {
-      background: transparent;
-      color: white;
-      border: 1px solid #94a3b8;
+    
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+      
+      .steps {
+        flex-direction: column;
+        align-items: center;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Header -->
   <header>
     <div class="container header-content">
       <a href="#" class="logo">
         <i class="fas fa-link logo-icon"></i>
         <span class="logo-text">NK3IO</span>
       </a>
+      <button id="googleLoginBtn" class="auth-button">
+        <i class="fab fa-google"></i>
+        <span>Iniciar sesión</span>
+      </button>
     </div>
   </header>
 
-  <main class="main">
-    <div class="login-box">
-      <h1 class="login-title">Bienvenido a NK3IO</h1>
-      <p class="login-description">Inicia sesión con Google para comenzar a acortar enlaces y monetizar tu tráfico</p>
-      <button id="googleLoginBtn" class="auth-button">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>Acorta, Comparte y Monetiza tus Enlaces</h1>
+      <p>La plataforma más avanzada para acortar URLs y ganar dinero con tu tráfico en 2025</p>
+      <button id="mainLoginBtn" class="auth-button" style="padding: 15px 30px; font-size: 1.1rem;">
         <i class="fab fa-google"></i>
-        Iniciar sesión con Google
+        Comenzar con Google
       </button>
     </div>
-  </main>
+  </section>
 
+  <!-- Features -->
+  <section class="container">
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-bolt"></i>
+        </div>
+        <h3 class="feature-title">Acortamiento Instantáneo</h3>
+        <p class="feature-desc">Convierte enlaces largos en URLs cortas y memorables con un solo click.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <h3 class="feature-title">Analíticas Avanzadas</h3>
+        <p class="feature-desc">Monitorea el rendimiento de tus enlaces con estadísticas en tiempo real.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-money-bill-wave"></i>
+        </div>
+        <h3 class="feature-title">Monetización Inteligente</h3>
+        <p class="feature-desc">Gana dinero por cada visita con nuestro sistema de CPM adaptativo.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works">
+    <div class="container">
+      <h2>Cómo funciona NK3IO</h2>
+      <p>Sigue estos simples pasos para comenzar a ganar dinero con tus enlaces</p>
+      
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Regístrate</h3>
+          <p>Crea tu cuenta con Google en segundos</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Acorta</h3>
+          <p>Pega tu enlace largo y obtén una versión corta</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Comparte</h3>
+          <p>Distribuye tu enlace corto donde quieras</p>
+        </div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <h3>Gana</h3>
+          <p>Recibe pagos por cada visita a tus enlaces</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
   <footer>
     <div class="container">
       <div class="footer-links">
-        <a href="privacidad.html" class="footer-link">Política de Privacidad</a>
-        <a href="terminos.html" class="footer-link">Términos y Condiciones</a>
+        <a href="privacidad.html" class="footer-link">Privacidad</a>
+        <a href="terminos.html" class="footer-link">Términos</a>
+        <a href="#" class="footer-link">Soporte</a>
       </div>
-      <p>&copy; 2023 NK3IO. Todos los derechos reservados.</p>
+      <p>&copy; 2025 NK3IO. Todos los derechos reservados.</p>
     </div>
   </footer>
 
-  <!-- Banner de Cookies -->
-  <div id="cookieBanner" class="cookie-banner">
-    <div class="container cookie-content">
-      <div class="cookie-text">
-        Utilizamos cookies para mejorar tu experiencia. Al continuar navegando, aceptas nuestro uso de cookies. 
-        <a href="privacidad.html">Más información</a>
-      </div>
-      <div class="cookie-buttons">
-        <button id="declineCookies" class="cookie-btn cookie-decline">Rechazar</button>
-        <button id="acceptCookies" class="cookie-btn cookie-accept">Aceptar</button>
-      </div>
-    </div>
-  </div>
-
-  <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
-    // Your web app's Firebase configuration
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  
+  <script>
+    // Configuración Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyAVZMKlYrDeM1ao14Hfzoiz4g4H0HF4HEU",
       authDomain: "nk3io-fba5a.firebaseapp.com",
@@ -231,50 +323,43 @@
       measurementId: "G-EVJ5805FY0"
     };
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
-
-    // Elementos del DOM
-    const googleLoginBtn = document.getElementById('googleLoginBtn');
-    const cookieBanner = document.getElementById('cookieBanner');
-    const acceptCookies = document.getElementById('acceptCookies');
-    const declineCookies = document.getElementById('declineCookies');
-
-    // Mostrar banner de cookies si no se ha aceptado
-    if (!localStorage.getItem('cookiesAccepted')) {
-      cookieBanner.style.display = 'block';
-    }
-
-    // Manejar aceptación de cookies
-    acceptCookies.addEventListener('click', () => {
-      localStorage.setItem('cookiesAccepted', 'true');
-      cookieBanner.style.display = 'none';
-    });
-
-    // Manejar rechazo de cookies
-    declineCookies.addEventListener('click', () => {
-      localStorage.setItem('cookiesAccepted', 'false');
-      cookieBanner.style.display = 'none';
-    });
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const provider = new firebase.auth.GoogleAuthProvider();
 
     // Login con Google
-    googleLoginBtn.addEventListener('click', async () => {
-      try {
-        await signInWithPopup(auth, provider);
-      } catch (error) {
-        console.error("Error en login:", error);
-        if (error.code !== 'auth/popup-closed-by-user') {
-          alert('Error al iniciar sesión. Intenta nuevamente.');
-        }
-      }
-    });
+    function loginWithGoogle() {
+      auth.signInWithPopup(provider)
+        .then((result) => {
+          // Guardar información del usuario
+          const user = result.user;
+          const userRef = db.collection('users').doc(user.uid);
+          
+          userRef.set({
+            email: user.email,
+            displayName: user.displayName || user.email.split('@')[0],
+            lastLogin: new Date(),
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+          
+          // Redirigir a home
+          window.location.href = "home.html";
+        })
+        .catch((error) => {
+          console.error("Error en login:", error);
+        });
+    }
 
-    // Redirigir si ya está autenticado
-    onAuthStateChanged(auth, (user) => {
+    // Asignar eventos
+    document.getElementById('googleLoginBtn').addEventListener('click', loginWithGoogle);
+    document.getElementById('mainLoginBtn').addEventListener('click', loginWithGoogle);
+
+    // Si ya está autenticado, redirigir
+    auth.onAuthStateChanged((user) => {
       if (user) {
-        window.location.href = 'home.html';
+        window.location.href = "home.html";
       }
     });
   </script>
