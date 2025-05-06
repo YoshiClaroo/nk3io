@@ -424,17 +424,6 @@
     }
   });
 
-   // Función para copiar URL
-    function copyUrl(url) {
-      navigator.clipboard.writeText(url)
-        .then(() => {
-          alert("URL copiada al portapapeles: " + url);
-        })
-        .catch((err) => {
-          console.error("Error al copiar:", err);
-        });
-    }
-
     // Función para ver estadísticas
     function viewStats(url) {
       window.open(url, '_blank');
