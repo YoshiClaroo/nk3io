@@ -3,168 +3,417 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NK3IO - Mis URLs</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <title>Mis URLs - NK3IO</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
-    /* Estilos consistentes con home.html */
-    .url-list {
-      margin-top: 30px;
+    :root {
+      --primary: #4f46e5;
+      --primary-dark: #4338ca;
+      --secondary: #e0e7ff;
+      --dark: #1e293b;
+      --light: #f8fafc;
+      --gray: #64748b;
+      --success: #10b981;
+      --error: #ef4444;
     }
-    .url-item {
-      background: white;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 15px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-    .url-header {
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    /* Header */
+    header {
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 20px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .header-content {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 10px;
+      align-items: center;
     }
-    .url-short {
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    
+    .logo-icon {
+      color: var(--primary);
+      font-size: 28px;
+    }
+    
+    .logo-text {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 25px;
+    }
+    
+    .nav-link {
+      color: var(--gray);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .nav-link:hover {
+      color: var(--primary);
+    }
+    
+    .nav-link i {
+      font-size: 18px;
+    }
+    
+    /* Main Content */
+    .main {
+      padding: 40px 0;
+    }
+    
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    
+    .page-title {
+      font-size: 2rem;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .page-title i {
+      color: var(--primary);
+    }
+    
+    /* URLs Table */
+    .urls-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+    
+    .urls-table th, 
+    .urls-table td {
+      padding: 15px 20px;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .urls-table th {
+      background: var(--secondary);
+      color: var(--primary);
+      font-weight: 600;
+    }
+    
+    .urls-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .urls-table tr:hover {
+      background: #f8fafc;
+    }
+    
+    .short-url {
       color: var(--primary);
       font-weight: 500;
+      text-decoration: none;
     }
-    .url-long {
+    
+    .long-url {
       color: var(--gray);
-      font-size: 0.9rem;
-      word-break: break-all;
-      margin-bottom: 10px;
+      max-width: 300px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    .url-stats {
+    
+    .stats-cell {
       display: flex;
-      gap: 15px;
-      font-size: 0.9rem;
+      gap: 20px;
     }
-    .stat {
+    
+    .stat-item {
       display: flex;
       align-items: center;
       gap: 5px;
+      font-size: 14px;
+    }
+    
+    .stat-item i {
+      color: var(--gray);
+    }
+    
+    .actions-cell {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .action-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--gray);
+      font-size: 16px;
+      transition: color 0.3s;
+    }
+    
+    .action-btn:hover {
+      color: var(--primary);
+    }
+    
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 0;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+    
+    .empty-state i {
+      font-size: 60px;
+      color: var(--secondary);
+      margin-bottom: 20px;
+    }
+    
+    .empty-state h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: var(--dark);
+    }
+    
+    .empty-state p {
+      color: var(--gray);
+      max-width: 500px;
+      margin: 0 auto 25px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .urls-table {
+        display: block;
+        overflow-x: auto;
+      }
+      
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+      
+      .nav-links {
+        gap: 15px;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Header -->
   <header>
     <div class="container header-content">
       <a href="home.html" class="logo">
         <i class="fas fa-link logo-icon"></i>
         <span class="logo-text">NK3IO</span>
       </a>
-      <div class="user-menu">
-        <img id="userAvatar" src="" alt="Avatar" class="user-avatar">
-        <button id="authButton" class="auth-button">
-          <i class="fas fa-sign-out-alt"></i>
-          <span>Cerrar sesión</span>
-        </button>
-      </div>
+      <nav class="nav-links">
+        <a href="home.html" class="nav-link">
+          <i class="fas fa-home"></i>
+          <span>Inicio</span>
+        </a>
+        <a href="urls.html" class="nav-link">
+          <i class="fas fa-list"></i>
+          <span>Mis URLs</span>
+        </a>
+      </nav>
     </div>
   </header>
 
+  <!-- Main Content -->
   <main class="main">
     <div class="container">
-      <h2 class="section-title">
-        <i class="fas fa-list"></i>
-        Mis URLs Acortadas
-      </h2>
+      <div class="page-header">
+        <h1 class="page-title">
+          <i class="fas fa-link"></i>
+          Mis URLs Acortadas
+        </h1>
+      </div>
       
-      <div id="urlList" class="url-list">
-        <!-- URLs se cargarán aquí -->
+      <div id="urlsContainer">
+        <!-- Tabla se llenará dinámicamente -->
+        <table class="urls-table">
+          <thead>
+            <tr>
+              <th>URL Corta</th>
+              <th>URL Original</th>
+              <th>Estadísticas</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="urlsList">
+            <!-- Las URLs se agregarán aquí -->
+          </tbody>
+        </table>
+        
+        <!-- Estado vacío -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+          <i class="fas fa-link-slash"></i>
+          <h3>No tienes URLs acortadas</h3>
+          <p>Comienza acortando tu primer enlace en la página de inicio para verlo aparecer aquí.</p>
+          <a href="home.html" class="nav-link" style="justify-content: center;">
+            <i class="fas fa-plus-circle"></i>
+            <span>Acortar nueva URL</span>
+          </a>
+        </div>
       </div>
     </div>
   </main>
 
-  <script type="module">
-    import { auth, db, logout } from './js/firebase.js';
-    import { 
-      collection, query, where, getDocs, orderBy 
-    } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
-    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  
+  <script>
+    // Configuración Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAVZMKlYrDeM1ao14Hfzoiz4g4H0HF4HEU",
+      authDomain: "nk3io-fba5a.firebaseapp.com",
+      projectId: "nk3io-fba5a",
+      storageBucket: "nk3io-fba5a.appspot.com",
+      messagingSenderId: "369749670993",
+      appId: "1:369749670993:web:c180f70dc68eedc9228c70",
+      measurementId: "G-EVJ5805FY0"
+    };
 
-    const authButton = document.getElementById('authButton');
-    const userAvatar = document.getElementById('userAvatar');
-    const urlList = document.getElementById('urlList');
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    // Configurar logout
-    authButton.onclick = logout;
+    // Elementos del DOM
+    const urlsList = document.getElementById('urlsList');
+    const emptyState = document.getElementById('emptyState');
 
     // Cargar URLs del usuario
-    async function loadUserUrls() {
-      try {
-        const q = query(
-          collection(db, "urls"), 
-          where("userId", "==", auth.currentUser.uid),
-          orderBy("createdAt", "desc")
-        );
-        
-        const querySnapshot = await getDocs(q);
-        urlList.innerHTML = '';
-        
-        querySnapshot.forEach((doc) => {
-          const urlData = doc.data();
-          const urlItem = document.createElement('div');
-          urlItem.className = 'url-item';
-          urlItem.innerHTML = `
-            <div class="url-header">
-              <a href="/redirect.html?id=${urlData.shortId}" class="url-short" target="_blank">
-                ${window.location.host}/r/${urlData.shortId}
-              </a>
-              <div class="url-actions">
-                <button class="btn-copy" data-url="${window.location.host}/r/${urlData.shortId}">
-                  <i class="fas fa-copy"></i>
-                </button>
-              </div>
-            </div>
-            <div class="url-long">${urlData.longUrl}</div>
-            <div class="url-stats">
-              <div class="stat">
-                <i class="fas fa-eye"></i>
-                <span>${urlData.clicks || 0} visitas</span>
-              </div>
-              <div class="stat">
-                <i class="fas fa-money-bill-wave"></i>
-                <span>$${((urlData.clicks || 0) * 0.005).toFixed(2)}</span>
-              </div>
-              <div class="stat">
-                <i class="fas fa-calendar"></i>
-                <span>${urlData.createdAt.toDate().toLocaleDateString()}</span>
-              </div>
-            </div>
-          `;
-          urlList.appendChild(urlItem);
-        });
-
-        // Configurar botones de copiar
-        document.querySelectorAll('.btn-copy').forEach(btn => {
-          btn.addEventListener('click', () => {
-            navigator.clipboard.writeText(btn.dataset.url);
-            btn.innerHTML = '<i class="fas fa-check"></i>';
-            setTimeout(() => {
-              btn.innerHTML = '<i class="fas fa-copy"></i>';
-            }, 2000);
-          });
-        });
-
-      } catch (error) {
-        console.error("Error cargando URLs:", error);
-        urlList.innerHTML = '<p>Error al cargar tus URLs. Intenta nuevamente.</p>';
-      }
+    function loadUserUrls() {
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          db.collection("urls")
+            .where("userId", "==", user.uid)
+            .orderBy("createdAt", "desc")
+            .get()
+            .then((querySnapshot) => {
+              urlsList.innerHTML = '';
+              
+              if (querySnapshot.empty) {
+                emptyState.style.display = 'block';
+                return;
+              }
+              
+              emptyState.style.display = 'none';
+              
+              querySnapshot.forEach((doc) => {
+                const urlData = doc.data();
+                const shortUrl = `${window.location.origin}/r/${urlData.shortId}`;
+                const statsUrl = `${window.location.origin}/stats/${urlData.shortId}`;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                  <td>
+                    <a href="${shortUrl}" target="_blank" class="short-url">
+                      nk3.io/${urlData.shortId}
+                    </a>
+                  </td>
+                  <td class="long-url" title="${urlData.longUrl}">
+                    ${urlData.longUrl}
+                  </td>
+                  <td>
+                    <div class="stats-cell">
+                      <span class="stat-item">
+                        <i class="fas fa-eye"></i>
+                        ${urlData.clicks || 0} visitas
+                      </span>
+                      <span class="stat-item">
+                        <i class="fas fa-money-bill-wave"></i>
+                        $${((urlData.clicks || 0) * 0.005).toFixed(2)}
+                      </span>
+                    </div>
+                  </td>
+                  <td class="actions-cell">
+                    <button class="action-btn" onclick="copyUrl('${shortUrl}')" title="Copiar">
+                      <i class="fas fa-copy"></i>
+                    </button>
+                    <button class="action-btn" onclick="viewStats('${statsUrl}')" title="Estadísticas">
+                      <i class="fas fa-chart-bar"></i>
+                    </button>
+                  </td>
+                `;
+                
+                urlsList.appendChild(row);
+              });
+            })
+            .catch((error) => {
+              console.error("Error cargando URLs:", error);
+            });
+        } else {
+          window.location.href = "login.html";
+        }
+      });
     }
 
-    // Observador de autenticación
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // Mostrar avatar si existe
-        if (user.photoURL) {
-          userAvatar.src = user.photoURL;
-        }
-        
-        // Cargar URLs
-        loadUserUrls();
-      } else {
-        window.location.href = 'login.html';
-      }
-    });
+    // Función para copiar URL
+    function copyUrl(url) {
+      navigator.clipboard.writeText(url)
+        .then(() => {
+          alert("URL copiada al portapapeles: " + url);
+        })
+        .catch((err) => {
+          console.error("Error al copiar:", err);
+        });
+    }
+
+    // Función para ver estadísticas
+    function viewStats(url) {
+      window.open(url, '_blank');
+    }
+
+    // Cargar URLs al iniciar
+    loadUserUrls();
   </script>
 </body>
 </html>
