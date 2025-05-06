@@ -734,6 +734,23 @@ await setDoc(doc(db, 'urls', shortId), {
         querySnapshot.forEach(doc => {
           totalClicks += doc.data().clicks || 0;
         });
+
+        // Después de loadStats()
+async function loadEarnings() {
+  const userId = auth.currentUser.uid;
+  const q = query(collection(db, 'urls'), where('userId', '==', userId));
+  const querySnapshot = await getDocs(q);
+
+  let totalEarnings = 0;
+  querySnapshot.forEach(doc => {
+    const clicks = doc.data().clicks || 0;
+    // CPM de $5 (0.005 por click)
+    totalEarnings += clicks * 0.005;
+  });
+
+  document.getElementById('totalEarnings').textContent = `$${totalEarnings.toFixed(2)}`;
+  return totalEarnings;
+}
         
         document.getElementById('totalVisits').textContent = totalClicks;
         document.getElementById('totalEarnings').textContent = `$${(totalClicks * 0.005).toFixed(2)}`;
