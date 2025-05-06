@@ -69,15 +69,14 @@
       collection, query, where, getDocs, addDoc 
     } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
-    // Obtener ID de la URL
+    // Obtener el ID de la URL (ej: nk3io.netlify.app/r?id=abc123)
 const urlParams = new URLSearchParams(window.location.search);
-const shortCode = urlParams.get('id');  // Cambiado de shortId a shortCode
+const shortCode = urlParams.get('id');  // "abc123"
 
-async function redirectToUrl() {
-  if (!shortCode) {
-    window.location.href = '/';
-    return;
-  }
+if (!shortCode) {
+  window.location.href = '/';  // Redirige si no hay ID
+  return;
+    }
 
   try {
     // Buscar la URL original usando shortCode
@@ -107,9 +106,12 @@ async function redirectToUrl() {
       }
 
       // Redirigir después de 3 segundos
-      setTimeout(() => {
-        window.location.href = targetUrl;
-      }, 3000);
+const urlData = querySnapshot.docs[0].data();
+setTimeout(() => {
+  window.location.href = urlData.longUrl.startsWith('http') 
+    ? urlData.longUrl 
+    : `https://${urlData.longUrl}`;
+}, 3000);
     } else {
       window.location.href = '/404.html';  // Página de error personalizada
     }
