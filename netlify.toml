@@ -3,8 +3,8 @@
   publish = "."
 
 [[redirects]]
-  from = "/r/*"  # Usa wildcard para cualquier ruta después de /r/
-  to = "/redirect.html"
+  from = "/r/*"
+  to = "/redirect.html?id=:splat"
   status = 200
 
 [[redirects]]
