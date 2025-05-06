@@ -3,8 +3,8 @@
   publish = "."
 
 [[redirects]]
-  from = "/r/:id"
-  to = "/redirect.html?id=:id"
+  from = "/r"
+  to = "/redirect.html"
   status = 200
 
 [[redirects]]
