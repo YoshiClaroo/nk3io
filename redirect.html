@@ -82,7 +82,7 @@
 
       try {
         // Buscar la URL original
-        const q = query(collection(db, "urls"), where("shortId", "==", shortId));
+        const q = query(collection(db, "urls"), where("shortCode", "==", shortId));
         const querySnapshot = await getDocs(q);
         
         if (!querySnapshot.empty) {
@@ -90,11 +90,8 @@
           const urlData = doc.data();
           
           // Registrar el click
-          await addDoc(collection(db, "clicks"), {
-            shortId,
-            timestamp: new Date(),
-            userId: urlData.userId,
-            earnings: 0.005 // Valor base
+          await updateDoc(doc(db, "urls", shortId), {
+            clicks: increment(1)
           });
           
           // Redirigir después de 3 segundos (para mostrar anuncio)
