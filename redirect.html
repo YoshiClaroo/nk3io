@@ -63,50 +63,24 @@
     </div>
   </div>
 
-  <script type="module">
+ <script type="module">
   import { db } from './firebase.js';
   import { 
-    collection, query, where, getDocs, 
-    updateDoc, increment 
+    collection, query, where, getDocs, updateDoc, increment 
   } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js';
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const shortId = urlParams.get('id');
+  const shortId = new URLSearchParams(window.location.search).get('id');
+  if (!shortId) window.location.href = '/';
 
-  if (!shortId) {
-    window.location.href = '/';
-    return;
-  }
-
-  try {
-    const q = query(collection(db, "urls"), where("shortId", "==", shortId));
-    const querySnapshot = await getDocs(q);
-
-    if (querySnapshot.empty) {
-      window.location.href = '/404.html';
-      return;
-    }
-
-    const docRef = querySnapshot.docs[0].ref;
-    const urlData = querySnapshot.docs[0].data();
-
-    // Actualizar contador
-    await updateDoc(docRef, {
-      clicks: increment(1),
-      lastClick: new Date()
-    });
-
-    // Redirigir después de 3 segundos (para mostrar anuncio)
-    setTimeout(() => {
-      const targetUrl = urlData.longUrl.startsWith('http') 
-        ? urlData.longUrl 
-        : `https://${urlData.longUrl}`;
-      window.location.href = targetUrl;
-    }, 3000);
-
-  } catch (error) {
-    console.error("Error en redirección:", error);
-    window.location.href = '/';
+  const q = query(collection(db, "urls"), where("shortId", "==", shortId));
+  const snapshot = await getDocs(q);
+  
+  if (!snapshot.empty) {
+    const docRef = snapshot.docs[0].ref;
+    await updateDoc(docRef, { clicks: increment(1) });
+    setTimeout(() => window.location.href = snapshot.docs[0].data().longUrl, 3000);
+  } else {
+    window.location.href = '/404.html';
   }
 </script>
 </body>
