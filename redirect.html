@@ -79,13 +79,15 @@ if (!shortCode) {
     }
 
   try {
-    // Buscar la URL original usando shortCode
-    const q = query(collection(db, "urls"), where("shortCode", "==", shortCode));
-    const querySnapshot = await getDocs(q);
-    
-    if (!querySnapshot.empty) {
-      const doc = querySnapshot.docs[0];
-      const urlData = doc.data();
+    / Buscar en Firestore (usando shortCode, no shortId)
+const q = query(collection(db, "urls"), where("shortCode", "==", shortCode));
+const querySnapshot = await getDocs(q);
+
+if (querySnapshot.empty) {
+  window.location.href = '/';  // Redirige si no existe el código
+  return;
+}
+
       
       // Actualizar contador de clicks
       await updateDoc(doc.ref, {
