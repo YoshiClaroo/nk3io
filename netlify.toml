@@ -3,8 +3,8 @@
   publish = "."
 
 [[redirects]]
-  from = "/r/:id"
-  to = "/redirect.html?id=:id"
+  from = "/r/:id"  # Captura lo que venga después de /r/ como parámetro :id
+  to = "/redirect.html?id=:id"  # Pasa el parámetro a redirect.html
   status = 200
 
 [[redirects]]
