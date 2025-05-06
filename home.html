@@ -6,7 +6,6 @@
   <title>NK3IO - Panel de Control</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* TUS ESTILOS ORIGINALES COMPLETOS (SIN CAMBIOS) */
     :root {
       --primary: #4f46e5;
       --primary-dark: #4338ca;
@@ -600,44 +599,14 @@
   </div>
 
   <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
-    import { 
-      getAuth, 
-      signOut,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { 
-      getFirestore, 
-      collection, 
-      query,
-      where,
-      getDocs,
-      doc,
-      setDoc,
-      updateDoc,
-      increment
-    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    // Importar configuración de Firebase
+    import { app, auth, db, logout } from './firebase.js';
+    
+    // Configuración del dominio
+    const DOMAIN = 'nk3io.netlify.app';
+    const SHORT_URL_PREFIX = `https://${DOMAIN}/n/`;
 
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyAVZMKlYrDeM1ao14Hfzoiz4g4H0HF4HEU",
-      authDomain: "nk3io-fba5a.firebaseapp.com",
-      projectId: "nk3io-fba5a",
-      storageBucket: "nk3io-fba5a.appspot.com",
-      messagingSenderId: "369749670993",
-      appId: "1:369749670993:web:c180f70dc68eedc9228c70",
-      measurementId: "G-EVJ5805FY0"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    // DOM Elements
+    // Elementos del DOM
     const authButton = document.getElementById('authButton');
     const userAvatar = document.getElementById('userAvatar');
     const welcomeName = document.getElementById('welcomeName');
@@ -649,35 +618,60 @@
     const longUrlInput = document.getElementById('longUrl');
     const aliasInput = document.getElementById('alias');
 
-    // Generate random short code
+    // Generar código corto aleatorio (6 caracteres alfanuméricos)
     function generateShortCode() {
-      return Math.random().toString(36).substring(2, 8);
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let result = '';
+      for (let i = 0; i < 6; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return result;
     }
 
-    // Shorten URL function
-    shortenBtn.addEventListener('click', async () => {
+    // Función para validar URL
+    function isValidUrl(url) {
+      try {
+        new URL(url);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    // Función para acortar URL
+    async function shortenUrl() {
       const longUrl = longUrlInput.value.trim();
       const customAlias = aliasInput.value.trim();
       
+      // Validación básica
       if (!longUrl) {
         alert('Por favor ingresa una URL válida');
-        return;
+        return false;
+      }
+
+      // Asegurar que la URL tenga protocolo
+      let processedUrl = longUrl;
+      if (!/^https?:\/\//i.test(processedUrl)) {
+        processedUrl = 'https://' + processedUrl;
+      }
+
+      // Validar formato de URL
+      if (!isValidUrl(processedUrl)) {
+        alert('La URL ingresada no tiene un formato válido');
+        return false;
       }
 
       try {
-        // Show loading state
+        // Mostrar estado de carga
         shortenBtn.disabled = true;
         shortenBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Acortando...';
         
-        // Add https if missing
-        const processedUrl = longUrl.startsWith('http') ? longUrl : `https://${longUrl}`;
-        
-        // Use custom alias or generate random code
+        // Generar código corto o usar alias personalizado
         const shortCode = customAlias || generateShortCode();
-        const shortUrl = `${window.location.origin}/r/${shortCode}`;
+        const shortUrl = `${SHORT_URL_PREFIX}${shortCode}`;
         
-        // Save to Firestore
-        await setDoc(doc(db, 'urls', shortCode), {
+        // Guardar en Firestore
+        await db.collection('urls').doc(shortCode).set({
           longUrl: processedUrl,
           shortCode: shortCode,
           createdAt: new Date(),
@@ -687,78 +681,108 @@
           tags: document.getElementById('tags').value.trim().split(',').map(tag => tag.trim()) || []
         });
         
-        // Show result
+        // Mostrar resultado
         shortUrlElement.textContent = shortUrl;
-        statsUrlElement.textContent = `${window.location.origin}/stats/${shortCode}`;
+        statsUrlElement.textContent = `${SHORT_URL_PREFIX}stats/${shortCode}`;
         resultContainer.style.display = 'block';
         
-        // Copy functionality
+        // Configurar botón de copiar
         copyBtn.onclick = () => {
-          navigator.clipboard.writeText(shortUrl);
-          copyBtn.innerHTML = '<i class="fas fa-check"></i> Copiado!';
-          setTimeout(() => {
-            copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copiar';
-          }, 2000);
+          navigator.clipboard.writeText(shortUrl).then(() => {
+            copyBtn.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+            setTimeout(() => {
+              copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copiar';
+            }, 2000);
+          });
         };
         
-        // Update stats
+        // Actualizar estadísticas
         await loadStats();
+        return true;
         
       } catch (error) {
-        console.error("Error:", error);
-        alert(error.message.includes('already exists') 
-          ? 'El alias ya está en uso' 
-          : 'Error al acortar URL');
+        console.error("Error al acortar URL:", error);
+        
+        // Manejar errores específicos
+        if (error.code === 'permission-denied') {
+          alert('Error: No tienes permisos para realizar esta acción');
+        } else if (error.code === 'already-exists') {
+          alert('Ese alias ya está en uso. Por favor elige otro');
+        } else {
+          alert('Ocurrió un error al acortar la URL');
+        }
+        return false;
       } finally {
+        // Restaurar estado del botón
         shortenBtn.disabled = false;
         shortenBtn.innerHTML = '<i class="fas fa-link"></i> Acortar URL';
       }
-    });
+    }
 
-    // Load user stats
+    // Cargar estadísticas del usuario
     async function loadStats() {
       try {
         const userId = auth.currentUser.uid;
-        const q = query(collection(db, 'urls'), where('userId', '==', userId));
-        const querySnapshot = await getDocs(q);
+        const querySnapshot = await db.collection('urls')
+          .where('userId', '==', userId)
+          .get();
         
+        // Actualizar contador de enlaces
         document.getElementById('totalLinks').textContent = querySnapshot.size;
         
+        // Calcular visitas totales
         let totalClicks = 0;
         querySnapshot.forEach(doc => {
           totalClicks += doc.data().clicks || 0;
         });
         
+        // Actualizar UI
         document.getElementById('totalVisits').textContent = totalClicks;
         document.getElementById('totalEarnings').textContent = `$${(totalClicks * 0.005).toFixed(2)}`;
       } catch (error) {
-        console.error("Error loading stats:", error);
+        console.error("Error cargando estadísticas:", error);
       }
     }
 
-    // Auth state observer
-    onAuthStateChanged(auth, (user) => {
+    // Observador de estado de autenticación
+    auth.onAuthStateChanged((user) => {
       if (user) {
-        if (user.photoURL) userAvatar.src = user.photoURL;
+        // Actualizar UI con datos del usuario
+        if (user.photoURL) {
+          userAvatar.src = user.photoURL;
+        }
+        
         welcomeName.textContent = `Hola, ${user.displayName || user.email.split('@')[0]}`;
+        
+        // Cargar estadísticas iniciales
         loadStats();
       } else {
+        // Redirigir a login si no hay usuario
         window.location.href = 'login.html';
       }
     });
 
-    // Other event listeners
-    document.getElementById('authButton').addEventListener('click', () => signOut(auth));
-    document.getElementById('urlsButton').addEventListener('click', () => window.location.href = 'urls.html');
-    document.getElementById('pagosButton').addEventListener('click', () => alert('Sistema de pagos en desarrollo'));
+    // Event Listeners
+    shortenBtn.addEventListener('click', shortenUrl);
+    authButton.addEventListener('click', logout);
     
-    // Cookies banner
+    document.getElementById('urlsButton').addEventListener('click', () => {
+      window.location.href = 'urls.html';
+    });
+    
+    document.getElementById('pagosButton').addEventListener('click', () => {
+      alert('Sistema de pagos en desarrollo. Próximamente!');
+    });
+
+    // Manejo de cookies
     if (!localStorage.getItem('cookiesAccepted')) {
       document.getElementById('cookieBanner').style.display = 'block';
+      
       document.getElementById('acceptCookies').addEventListener('click', () => {
         localStorage.setItem('cookiesAccepted', 'true');
         document.getElementById('cookieBanner').style.display = 'none';
       });
+      
       document.getElementById('declineCookies').addEventListener('click', () => {
         localStorage.setItem('cookiesAccepted', 'false');
         document.getElementById('cookieBanner').style.display = 'none';
