@@ -70,45 +70,57 @@
     } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
     // Obtener ID de la URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const shortId = urlParams.get('id');
+const urlParams = new URLSearchParams(window.location.search);
+const shortCode = urlParams.get('id');  // Cambiado de shortId a shortCode
 
-    // Función para registrar click y redirigir
-    async function redirectToUrl() {
-      if (!shortId) {
-        window.location.href = '/';
-        return;
+async function redirectToUrl() {
+  if (!shortCode) {
+    window.location.href = '/';
+    return;
+  }
+
+  try {
+    // Buscar la URL original usando shortCode
+    const q = query(collection(db, "urls"), where("shortCode", "==", shortCode));
+    const querySnapshot = await getDocs(q);
+    
+    if (!querySnapshot.empty) {
+      const doc = querySnapshot.docs[0];
+      const urlData = doc.data();
+      
+      // Actualizar contador de clicks
+      await updateDoc(doc.ref, {
+        clicks: increment(1)
+      });
+
+      // Registrar el click (opcional)
+      await addDoc(collection(db, "clicks"), {
+        shortCode,
+        timestamp: new Date(),
+        userId: urlData.userId
+      });
+
+      // Validar y formatear URL
+      let targetUrl = urlData.longUrl;
+      if (!targetUrl.startsWith('http')) {
+        targetUrl = 'https://' + targetUrl;
       }
 
-      try {
-        // Buscar la URL original
-        const q = query(collection(db, "urls"), where("shortCode", "==", shortId));
-        const querySnapshot = await getDocs(q);
-        
-        if (!querySnapshot.empty) {
-          const doc = querySnapshot.docs[0];
-          const urlData = doc.data();
-          
-          // Registrar el click
-          await updateDoc(doc(db, "urls", shortId), {
-            clicks: increment(1)
-          });
-          
-          // Redirigir después de 3 segundos (para mostrar anuncio)
-          setTimeout(() => {
-            window.location.href = urlData.longUrl;
-          }, 3000);
-        } else {
-          window.location.href = '/';
-        }
-      } catch (error) {
-        console.error("Error en redirección:", error);
-        window.location.href = '/';
-      }
+      // Redirigir después de 3 segundos
+      setTimeout(() => {
+        window.location.href = targetUrl;
+      }, 3000);
+    } else {
+      window.location.href = '/404.html';  // Página de error personalizada
     }
+  } catch (error) {
+    console.error("Error en redirección:", error);
+    window.location.href = '/';
+  }
+}
 
-    // Iniciar el proceso
-    redirectToUrl();
+// Iniciar el proceso
+redirectToUrl();
   </script>
 </body>
 </html>
