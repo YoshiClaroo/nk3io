@@ -680,7 +680,7 @@
         
         // Use custom alias or generate random code
         const shortCode = customAlias || generateShortCode();
-        const shortUrl = `${window.location.origin}/r/${shortCode}`;
+        const shortUrl = `https://nk3io.netlify.app/r/${shortCode}`;
         
         // Save to Firestore
         await setDoc(doc(db, 'urls', shortCode), {
