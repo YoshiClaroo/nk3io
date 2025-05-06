@@ -721,20 +721,26 @@ await setDoc(doc(db, 'urls', shortId), {
       }
     });
 
-    // Load user stats
-    async function loadStats() {
-      try {
-        const userId = auth.currentUser.uid;
-        const q = query(collection(db, 'urls'), where('userId', '==', userId));
-        const querySnapshot = await getDocs(q);
-        
-        document.getElementById('totalLinks').textContent = querySnapshot.size;
-        
-        let totalClicks = 0;
-        querySnapshot.forEach(doc => {
-          totalClicks += doc.data().clicks || 0;
-        });
+    // En el script type="module", reemplaza loadStats() con:
+async function loadStats() {
+  const userId = auth.currentUser.uid;
+  const q = query(collection(db, 'urls'), where('userId', '==', userId));
+  
+  onSnapshot(q, (snapshot) => {
+    let totalLinks = 0, totalClicks = 0;
+    
+    snapshot.forEach(doc => {
+      totalLinks++;
+      totalClicks += doc.data().clicks || 0;
+    });
 
+    // Actualiza UI
+    document.getElementById('totalLinks').textContent = totalLinks;
+    document.getElementById('totalVisits').textContent = totalClicks;
+    document.getElementById('totalEarnings').textContent = `$${(totalClicks * 0.005).toFixed(2)}`;
+    document.getElementById('avgCpm').textContent = `$${(totalLinks > 0 ? (totalClicks / totalLinks * 0.005) : 0).toFixed(2)}`;
+  });
+}
         // Después de loadStats()
 async function loadEarnings() {
   const userId = auth.currentUser.uid;
