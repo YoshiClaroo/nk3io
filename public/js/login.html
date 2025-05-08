@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-adsense-account" content="ca-pub-3539363562189833">
+  <title>Iniciar Sesión | URLy</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #1e40af;
+      --primary-dark: #1e3a8a;
+      --secondary: #e0e7ff;
+      --dark: #1e293b;
+      --light: #f8fafc;
+      --gray: #64748b;
+      --success: #10b981;
+      --error: #ef4444;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 400px;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .logo-icon {
+      color: var(--primary);
+      font-size: 32px;
+    }
+    .logo-text {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      width: 100%;
+      transition: background 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn:hover {
+      background: var(--primary-dark);
+    }
+    .btn:disabled {
+      background: var(--gray);
+      cursor: not-allowed;
+    }
+    .google-btn {
+      background: white;
+      color: var(--dark);
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    .google-btn:hover {
+      background: #f8fafc;
+    }
+    .error-message {
+      color: var(--error);
+      margin-top: 20px;
+      display: none;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <i class="fas fa-link logo-icon"></i>
+      <span class="logo-text">URLy</span>
+    </div>
+    <h1>Iniciar Sesión</h1>
+    <button id="googleSignInBtn" class="btn google-btn">
+      <i class="fab fa-google"></i>
+      Iniciar sesión con Google
+    </button>
+    <div id="errorMessage" class="error-message"></div>
+  </div>
+  <script type="module">
+    import { auth } from './js/firebase.js';
+    import { GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.7.0/firebase-auth.js';
+
+    let isRedirecting = false;
+
+    onAuthStateChanged(auth, (user) => {
+      if (isRedirecting) return;
+      if (user) {
+        isRedirecting = true;
+        window.location.href = '/index.html';
+      }
+    });
+
+    const googleSignInBtn = document.getElementById('googleSignInBtn');
+    const errorMessage = document.getElementById('errorMessage');
+
+    googleSignInBtn.addEventListener('click', async () => {
+      googleSignInBtn.disabled = true;
+      googleSignInBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Iniciando...';
+      errorMessage.style.display = 'none';
+
+      try {
+        const provider = new GoogleAuthProvider();
+        await signInWithPopup(auth, provider);
+        isRedirecting = true;
+        window.location.href = '/index.html';
+      } catch (error) {
+        console.error('Error al iniciar sesión con Google:', error);
+        errorMessage.textContent = translateAuthError(error.code);
+        errorMessage.style.display = 'block';
+      } finally {
+        googleSignInBtn.disabled = false;
+        googleSignInBtn.innerHTML = '<i class="fab fa-google"></i> Iniciar sesión con Google';
+      }
+    });
+
+    function translateAuthError(code) {
+      switch (code) {
+        case 'auth/popup-closed-by-user':
+          return 'La ventana de inicio de sesión fue cerrada.';
+        case 'auth/network-request-failed':
+          return 'Error de red. Verifica tu conexión.';
+        case 'auth/too-many-requests':
+          return 'Demasiados intentos. Intenta de nuevo más tarde.';
+        default:
+          return 'Error al iniciar sesión. Intenta de nuevo.';
+      }
+    }
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('Service Worker registrado'))
+          .catch(err => console.error('Error al registrar Service Worker:', err));
+      });
+    }
+  </script>
+</body>
+</html>
